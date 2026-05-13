@@ -36,17 +36,13 @@
         .bushu-char { font-family: 'Noto Serif JP', serif; font-size: 100px; font-weight: 900; color: var(--ink); margin-bottom: 10px; }
         .hint-box { background: var(--blue-light); border-radius: 8px; padding: 12px; margin-bottom: 15px; font-size: 0.9rem; }
         .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 24px; }
-        .choice-btn { padding: 14px; background: white; border: 2px solid var(--paper-darker); border-radius: 10px; font-weight: 700; color: var(--ink); cursor: pointer; transition: 0.15s; }
-        .choice-btn.correct { background: var(--green-light); border-color: var(--green); color: var(--green); }
-        .choice-btn.wrong { background: var(--red-light); border-color: var(--red); color: var(--red); }
+        .choice-btn { padding: 14px; background: white; border: 2px solid var(--paper-darker); border-radius: 10px; font-weight: 700; color: var(--ink); cursor: pointer; }
         .input-row { display: flex; gap: 8px; padding: 0 24px 24px; }
         .answer-input { flex: 1; padding: 12px; border: 2px solid var(--paper-darker); border-radius: 10px; text-align: center; font-size: 1.1rem; }
         .submit-btn { padding: 12px 20px; background: var(--ink); color: var(--gold); border: 2px solid var(--gold); border-radius: 10px; font-weight: 700; }
         .result-row { min-height: 40px; text-align: center; font-weight: 700; margin-bottom: 10px; padding: 0 20px; }
         .next-btn { width: 90%; margin: 0 auto 20px; padding: 15px; background: var(--ink); color: white; border-radius: 10px; font-weight: 700; display: none; cursor: pointer; border: none; }
         .progress-bar { height: 6px; background: var(--gold); width: 0%; transition: 0.3s; }
-        .confetti-piece { position: fixed; width: 8px; height: 8px; top: -10px; animation: confetti-fall linear forwards; border-radius: 2px; pointer-events: none; z-index: 9999; }
-        @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -60,7 +56,7 @@
 
     <div id="main-card">
         <div class="top-bar">
-            <span>部首対策</span>
+            <span>部首名マスター</span>
             <div id="stats">Score: 0 | 🔥 0</div>
         </div>
         <div class="mode-tabs">
@@ -84,13 +80,11 @@
 
     <div id="result-screen">
         <h2 id="final-score" style="font-size:3rem;"></h2>
-        <p id="final-msg" style="margin:20px 0;"></p>
         <button class="start-btn" onclick="location.reload()">もう一度</button>
     </div>
 </div>
 
 <script>
-// データセット（以前のものを保持）
 const bushuData = [
     { char:"一", name:"いち", strokes:1, samples:"一・上・下", choices:["いち","つち","じゅう","の"] },
     { char:"丨", name:"たてぼう", strokes:1, samples:"中・串", choices:["たてぼう","いち","の","はねぼう"] },
@@ -173,7 +167,7 @@ const bushuData = [
     { char:"疒", name:"やまいだれ", strokes:5, samples:"病・症・痛", choices:["やまいだれ","まだれ","がんだれ","しかばね"] },
     { char:"目", name:"め", strokes:5, samples:"目・見・眠", choices:["め","ひ","くち","た"] },
     { char:"石", name:"いし", strokes:5, samples:"石・岩・砂", choices:["いし","くち","やま","つち"] },
-    { char:"立", name:"たつ", strokes:5, samples:"たつ","たつへん","なべぶた","じゅう"] },
+    { char:"立", name:"たつ", strokes:5, samples:["たつ","たつへん","なべぶた","じゅう"] },
     { char:"衣", name:"ころも", strokes:6, samples:"衣・袋", choices:["ころも","ころもへん","しめすへん","なべぶた"] },
     { char:"⻂", name:"ころもへん", strokes:5, samples:"初・被・複", choices:["ころもへん","しめすへん","さんずい","ゆきへん"] },
     { char:"米", name:"こめ", strokes:6, samples:"米・粉・粒", choices:["こめ","こめへん","きへん","のぎへん"] },
@@ -195,7 +189,6 @@ const bushuData = [
     { char:"黄", name:"きいろ", strokes:11, samples:"黄", choices:["きいろ","つち","にじゅうあし","じゅう"] }
 ];
 
-// 音声ファイルオブジェクト
 const seikaiSound = new Audio('seikai.wav');
 const hazureSound = new Audio('hazure.wav');
 
@@ -206,19 +199,15 @@ let sessionPool = [];
 function initApp() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('main-card').classList.add('visible');
-    
-    // iPhone対策：ユーザー操作直後に音声をロード
-    seikaiSound.load();
-    hazureSound.load();
-    
+    // 音声ファイルの事前ロード
+    seikaiSound.load(); hazureSound.load();
     startSession();
 }
 
 function startSession() {
     score = 0; streak = 0; questionsDone = 0;
     sessionPool = [...bushuData].sort(() => Math.random() - 0.5).slice(0, SESSION_COUNT);
-    updateStats();
-    nextQuestion();
+    updateStats(); nextQuestion();
 }
 
 function setMode(m) {
@@ -235,18 +224,16 @@ function nextQuestion() {
     currentQ = sessionPool[questionsDone];
     document.getElementById('bushu-char').innerText = currentQ.char;
     document.getElementById('stroke-info').innerText = currentQ.strokes + '画';
-    document.getElementById('hint-text').innerText = 'ヒント：' + currentQ.samples;
+    document.getElementById('hint-text').innerText = 'ヒント：' + (Array.isArray(currentQ.samples) ? currentQ.samples.join('・') : currentQ.samples);
     document.getElementById('result-message').innerText = '';
     document.getElementById('next-btn').style.display = 'none';
     document.getElementById('progress-bar').style.width = (questionsDone / SESSION_COUNT * 100) + '%';
     
     if (mode === 'beginner') {
-        const ui = document.getElementById('beginner-ui');
-        ui.innerHTML = '';
+        const ui = document.getElementById('beginner-ui'); ui.innerHTML = '';
         [...currentQ.choices].sort(() => Math.random() - 0.5).forEach(c => {
             const btn = document.createElement('button');
-            btn.className = 'choice-btn';
-            btn.innerText = c;
+            btn.className = 'choice-btn'; btn.innerText = c;
             btn.onclick = () => checkAnswer(c);
             ui.appendChild(btn);
         });
@@ -257,57 +244,30 @@ function nextQuestion() {
 
 function checkAdvanced() {
     const val = document.getElementById('answer-input').value.trim();
-    if (!val) return;
-    checkAnswer(val);
+    if (!val) return; checkAnswer(val);
 }
 
-// メインの判定処理
 function checkAnswer(ans) {
     if (document.getElementById('next-btn').style.display === 'block') return;
-
     const isCorrect = Array.isArray(currentQ.name) ? currentQ.name.includes(ans) : currentQ.name === ans;
     questionsDone++;
-    
     const msg = document.getElementById('result-message');
     if (isCorrect) {
         score += 10; streak++;
         msg.innerText = '⭕ 正解！'; msg.style.color = 'var(--green)';
-        
-        // 正解音を再生
-        seikaiSound.currentTime = 0;
-        seikaiSound.play().catch(e => console.log("Audio play error:", e));
-        
-        if (streak >= 3) launchConfetti();
+        seikaiSound.currentTime = 0; seikaiSound.play().catch(e => console.log(e));
     } else {
         streak = 0;
         const n = Array.isArray(currentQ.name) ? currentQ.name[0] : currentQ.name;
         msg.innerText = '❌ 不正解！正解は：' + n; msg.style.color = 'var(--red)';
-        
-        // 不正解音を再生
-        hazureSound.currentTime = 0;
-        hazureSound.play().catch(e => console.log("Audio play error:", e));
+        hazureSound.currentTime = 0; hazureSound.play().catch(e => console.log(e));
     }
-    
     updateStats();
     document.getElementById('next-btn').style.display = 'block';
-    document.getElementById('next-btn').innerText = questionsDone >= SESSION_COUNT ? '結果を見る →' : '次へ →';
 }
 
 function updateStats() {
     document.getElementById('stats').innerText = `Score: ${score} | 🔥 ${streak}`;
-}
-
-function launchConfetti() {
-    const colors = ['#d4a017','#c0392b','#27ae60','#2980b9'];
-    for (let i = 0; i < 30; i++) {
-        const el = document.createElement('div');
-        el.className = 'confetti-piece';
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.background = colors[Math.floor(Math.random() * colors.length)];
-        el.style.animationDuration = (1 + Math.random() * 2) + 's';
-        document.body.appendChild(el);
-        el.addEventListener('animationend', () => el.remove());
-    }
 }
 
 function showResultScreen() {
@@ -315,7 +275,6 @@ function showResultScreen() {
     const rs = document.getElementById('result-screen');
     rs.style.display = 'block';
     document.getElementById('final-score').innerText = score + '点';
-    document.getElementById('final-msg').innerText = score >= 80 ? '🏆 合格圏内です！' : '📖 復習しましょう！';
 }
 </script>
 </body>
