@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部首名マスター 3級</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=M+PLUS+1p:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --red: #c0392b;
+            --gold: #d4a017;
+            --gold-light: #f9e6a0;
+            --gold-dark: #8a6800;
+            --paper: #fdf6e3;
+            --paper-dark: #f0e6c8;
+            --paper-darker: #e0d0a0;
+            --green: #27ae60;
+            --green-light: #eafaf1;
+            --red-light: #fdecea;
+            --blue: #2980b9;
+            --blue-light: #eaf4fb;
+            --shadow: rgba(0,0,0,0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'M PLUS 1p', sans-serif;
+            background: var(--ink);
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(100,80,20,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(60,40,10,0.4) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 12px;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+        }
+
+        /* ===== START SCREEN ===== */
+        #start-screen {
+            background: var(--paper);
+            border-radius: 16px;
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 3px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+        }
+        #start-screen::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+        }
+        .start-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--ink);
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+        }
+        .start-subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        .start-kanji-deco {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--paper-dark);
+            margin: 16px 0;
+            letter-spacing: 0.2em;
+            line-height: 1;
+            user-select: none;
+        }
+        .start-btn {
+            display: inline-block;
+            padding: 16px 48px;
+            background: var(--ink);
+            color: var(--gold);
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .start-btn:hover { background: #2d2d50; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .start-note { font-size: 0.75rem; color: #999; margin-top: 20px; }
+
+        /* ===== MAIN CARD ===== */
+        #main-card {
+            background: var(--paper);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 3px solid var(--gold);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+        #main-card.visible { display: flex; }
+
+        /* Top bar */
+        .top-bar {
+            background: var(--ink);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        .app-title-bar {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.05em;
+        }
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.6rem;
+            color: rgba(212,160,23,0.7);
+            letter-spacing: 0.05em;
+        }
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* Streak flame */
+        .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .flame { font-size: 1rem; }
+        .streak-num { font-size: 1rem; font-weight: 700; color: #ff9944; }
+
+        /* Mode tabs */
+        .mode-tabs {
+            display: flex;
+            background: var(--paper-dark);
+            border-bottom: 2px solid var(--paper-darker);
+        }
+        .mode-tab {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .mode-tab.active {
+            color: var(--ink);
+            border-bottom-color: var(--ink);
+            background: var(--paper);
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            background: var(--paper-dark);
+            height: 6px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+            transition: width 0.4s ease;
+        }
+
+        /* Question area */
+        .question-area {
+            padding: 24px 24px 16px;
+        }
+
+        .bushu-stage {
+            text-align: center;
+            margin: 0 0 16px;
+        }
+        .category-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 2px 12px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .bushu-char {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 90px;
+            font-weight: 900;
+            color: var(--ink);
+            line-height: 1.1;
+            display: block;
+            transition: all 0.3s;
+        }
+        .bushu-char.shake {
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
+        }
+        .bushu-char.pop {
+            animation: pop 0.3s ease;
+        }
+        @keyframes pop {
+            0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)}
+        }
+        .stroke-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .hint-box {
+            background: var(--blue-light);
+            border: 1px solid #b3d7ef;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            color: #1a5276;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .hint-label {
+            font-size: 0.7rem;
+            color: #5d8aa8;
+            margin-bottom: 2px;
+        }
+
+        /* Answer section */
+        .answer-area {
+            padding: 0 24px 24px;
+        }
+
+        /* 4-choice grid */
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .choice-btn {
+            padding: 14px 8px;
+            background: white;
+            border: 2px solid var(--paper-darker);
+            border-radius: 10px;
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ink);
+            cursor: pointer;
+            transition: all 0.15s;
+            outline: none;
+        }
+        .choice-btn:hover:not(:disabled) {
+            border-color: var(--gold);
+            background: var(--gold-light);
+            transform: translateY(-1px);
+        }
+        .choice-btn.correct {
+            background: var(--green-light);
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .choice-btn.wrong {
+            background: var(--red-light);
+            border-color: var(--red);
+            color: var(--red);
+        }
+        .choice-btn:disabled { cursor: default; }
+
+        /* Text input */
+        .input-row {
+            display: flex;
+            gap: 8px;
+        }
+        .answer-input {
+            flex: 1;
+            padding: 12px 16px;
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 1rem;
+            border: 2px solid var(--paper-darker);
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            color: var(--ink);
+            transition: border-color 0.2s;
+        }
+        .answer-input:focus { border-color: var(--gold); }
+        .answer-input.correct { border-color: var(--green); background: var(--green-light); }
+        .answer-input.wrong { border-color: var(--red); background: var(--red-light); }
+        .submit-btn {
+            padding: 12px 20px;
+            background: var(--ink);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .submit-btn:hover { background: #2d2d50; }
+
+        /* Result message */
+        .result-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 36px;
+            margin-top: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .result-correct { color: var(--green); }
+        .result-wrong { color: var(--red); }
+
+        /* Next button */
+        .next-btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 14px;
+            background: var(--ink);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+            letter-spacing: 0.05em;
+        }
+        .next-btn:hover { background: #2d2d50; transform: translateY(-1px); }
+
+        /* ===== RESULT SCREEN ===== */
+        #result-screen {
+            background: var(--paper);
+            border-radius: 16px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 3px solid var(--gold);
+            display: none;
+        }
+        .result-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--ink);
+            margin-bottom: 24px;
+        }
+        .result-score-big {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--gold-dark);
+            line-height: 1;
+        }
+        .result-score-sub { font-size: 0.9rem; color: #888; margin-bottom: 24px; }
+        .result-grade {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 12px 0 24px;
+        }
+        .result-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .result-stat-card {
+            background: var(--paper-dark);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .result-stat-label { font-size: 0.7rem; color: #888; }
+        .result-stat-val { font-size: 1.4rem; font-weight: 700; color: var(--ink); }
+        .retry-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: var(--ink);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            font-family: 'M PLUS 1p', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .retry-btn:hover { background: #2d2d50; transform: translateY(-2px); }
+
+        /* ===== CONFETTI ===== */
+        .confetti-piece {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            top: -10px;
+            animation: confetti-fall linear forwards;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <div class="start-kanji-deco">部首</div>
+        <div class="start-title">部首名マスター</div>
+        <div class="start-subtitle">硬筆書写検定3級 理論対策</div>
+        <button class="start-btn" onclick="initApp()">学習を始める</button>
+        <div class="start-note">✦ 正解すると音声で「正解！」と読み上げます</div>
+    </div>
+
+    <!-- Main Quiz Card -->
+    <div id="main-card">
+        <div class="top-bar">
+            <div class="app-title-bar">部首名マスター</div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-label">スコア</div>
+                    <div class="stat-value" id="score-display">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">正解率</div>
+                    <div class="stat-value" id="acc-display">—</div>
+                </div>
+                <div class="streak-display" title="連続正解">
+                    <span class="flame">🔥</span>
+                    <span class="streak-num" id="streak-display">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mode-tabs">
+            <button class="mode-tab active" id="tab-beginner" onclick="setMode('beginner')">🎯 初級（4択）</button>
+            <button class="mode-tab" id="tab-advanced" onclick="setMode('advanced')">✏️ 応用（入力）</button>
+            <button class="mode-tab" id="tab-review" onclick="setMode('review')">📋 復習</button>
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+        </div>
+
+        <div class="question-area">
+            <div class="bushu-stage">
+                <div class="category-badge" id="category-badge">べん・つくり</div>
+                <div class="bushu-char" id="bushu-char">亻</div>
+                <div class="stroke-badge" id="stroke-info">2画</div>
+            </div>
+            <div class="hint-box">
+                <div class="hint-label">使用例</div>
+                <div id="hint-text">休・代・仕</div>
+            </div>
+        </div>
+
+        <div class="answer-area">
+            <!-- 初級UI -->
+            <div id="beginner-ui" class="choices-grid"></div>
+
+            <!-- 応用UI -->
+            <div id="advanced-ui" style="display:none;">
+                <div class="input-row">
+                    <input class="answer-input" type="text" id="answer-input" placeholder="ひらがなで入力" autocomplete="off" autocapitalize="none">
+                    <button class="submit-btn" onclick="checkAdvanced()">回答</button>
+                </div>
+            </div>
+
+            <!-- 復習UI -->
+            <div id="review-ui" style="display:none;">
+                <div id="review-list"></div>
+            </div>
+
+            <div class="result-row" id="result-message"></div>
+            <button class="next-btn" id="next-btn" style="display:none;" onclick="nextQuestion()">次の問題へ →</button>
+        </div>
+    </div>
+
+    <!-- Result Screen (10問終了後) -->
+    <div id="result-screen">
+        <div class="result-title">セッション終了！</div>
+        <div class="result-score-big" id="final-score">0</div>
+        <div class="result-score-sub" id="final-score-sub">10問中 7問正解</div>
+        <div class="result-grade" id="final-grade">🥈 よくできました！</div>
+        <div class="result-stats-grid">
+            <div class="result-stat-card">
+                <div class="result-stat-label">最大連続正解</div>
+                <div class="result-stat-val" id="final-streak">0</div>
+            </div>
+            <div class="result-stat-card">
+                <div class="result-stat-label">獲得スコア</div>
+                <div class="result-stat-val" id="final-points">0</div>
+            </div>
+            <div class="result-stat-card" style="grid-column:1/-1;">
+                <div class="result-stat-label">間違えた部首</div>
+                <div id="final-wrongs" style="font-size:0.9rem;color:#555;margin-top:4px;">—</div>
+            </div>
+        </div>
+        <button class="retry-btn" onclick="startSession()">もう一度チャレンジ！</button>
+    </div>
+
+</div>
+
+<script>
+const bushuData = [
+    // ── へん（偏）──
+    { char:"亻", name:"にんべん", strokes:2, category:"へん", samples:"休・代・仕・使・働・係", choices:["にんべん","ぎょうにんべん","いとにょう","ひとあし"] },
+    { char:"氵", name:"さんずい", strokes:3, category:"へん", samples:"海・泳・池・洗・深・港", choices:["さんずい","にすい","したみず","うかんむり"] },
+    { char:"忄", name:"りっしんべん", strokes:3, category:"へん", samples:"忙・情・快・悩・性・悲", choices:["りっしんべん","にんべん","したごころ","きへん"] },
+    { char:"彳", name:"ぎょうにんべん", strokes:3, category:"へん", samples:"行・役・復・待・後・徒", choices:["ぎょうにんべん","にんべん","しんにゅう","いとへん"] },
+    { char:"⺭", name:"しめすへん", strokes:4, category:"へん", samples:"神・社・福・礼・祈・視", choices:["しめすへん","ころもへん","のぎへん","けものへん"] },
+    { char:"⻂", name:"ころもへん", strokes:5, category:"へん", samples:"初・被・複・補・裏・製", choices:["ころもへん","しめすへん","さんずい","ゆきへん"] },
+    { char:"禾", name:"のぎへん", strokes:5, category:"へん", samples:"秋・私・和・科・種・税", choices:["のぎへん","きへん","かねへん","こめへん"] },
+    { char:"木", name:"きへん", strokes:4, category:"へん", samples:"林・桜・机・板・橋・椅", choices:["きへん","のぎへん","てへん","いしへん"] },
+    { char:"糸", name:"いとへん", strokes:6, category:"へん", samples:"絵・線・組・続・終・紙", choices:["いとへん","きへん","さんずい","てへん"] },
+    { char:"扌", name:"てへん", strokes:3, category:"へん", samples:"持・拾・押・払・探・投", choices:["てへん","きへん","いとへん","さんずい"] },
+    { char:"讠", name:"ごんべん", strokes:2, category:"へん", samples:"語・話・読・詩・記・訓", choices:["ごんべん","にんべん","のぎへん","さんずい"] },
+    { char:"钅", name:"かねへん", strokes:5, category:"へん", samples:"銀・鉄・鈴・針・錠・鍵", choices:["かねへん","きへん","のぎへん","さんずい"] },
+    { char:"足", name:"あしへん", strokes:7, category:"へん", samples:"跳・跡・路・踊・踏・蹴", choices:["あしへん","てへん","たへん","さんずい"] },
+    { char:"口", name:"くちへん", strokes:3, category:"へん", samples:"唄・喉・叫・嗅・吟・嗚", choices:["くちへん","にんべん","さんずい","てへん"] },
+    { char:"日", name:"ひへん", strokes:4, category:"へん", samples:"映・晩・暗・晴・曜・昨", choices:["ひへん","にちへん","めへん","つきへん"] },
+    { char:"月", name:"つきへん", strokes:4, category:"へん", samples:"朝・期・朗・望・胸・腕", choices:["つきへん","ひへん","にくづき","さんずい"] },
+    { char:"土", name:"つちへん", strokes:3, category:"へん", samples:"場・地・坂・塔・墓・堤", choices:["つちへん","にんべん","てへん","さんずい"] },
+    { char:"火", name:"ひへん", strokes:4, category:"へん", samples:"炎・焼・烈・燃・炊・炉", choices:["ひへん","さんずい","きへん","てへん"] },
+    { char:"米", name:"こめへん", strokes:6, category:"へん", samples:"粉・粒・精・糖・糟・糊", choices:["こめへん","のぎへん","いとへん","さんずい"] },
+    { char:"石", name:"いしへん", strokes:5, category:"へん", samples:"破・砂・確・硬・砕・碁", choices:["いしへん","きへん","てへん","さんずい"] },
+    { char:"田", name:"たへん", strokes:5, category:"へん", samples:"界・畑・略・畳・町・留", choices:["たへん","くにへん","めへん","くちへん"] },
+    { char:"阝(左)", name:"こざとへん", strokes:3, category:"へん", samples:"院・防・降・陰・除・際", choices:["こざとへん","おおざと","れっか","つちへん"] },
+    { char:"目", name:"めへん", strokes:5, category:"へん", samples:"眠・眩・盲・眺・瞬・瞳", choices:["めへん","ひへん","つきへん","くちへん"] },
+
+    // ── つくり（旁）──
+    { char:"阝(右)", name:"おおざと", strokes:3, category:"つくり", samples:"部・都・郡・郷・郊・郵", choices:["おおざと","こざとへん","えんにょう","ふるとり"] },
+    { char:"攵", name:"のぶん", strokes:4, category:"つくり", samples:"攻・教・改・政・散・収", choices:["のぶん","ぼくにょう","さんずい","てへん"] },
+    { char:"欠", name:"あくび", strokes:4, category:"つくり", samples:"歌・欲・欺・款・飲・軟", choices:["あくび","にんべん","きへん","てへん"] },
+    { char:"刀", name:"りっとう", strokes:2, category:"つくり", samples:"別・利・制・割・剣・削", choices:["りっとう","ちから","かたな","さんずい"] },
+    { char:"力", name:"ちから", strokes:2, category:"つくり", samples:"加・勝・勉・助・努・功", choices:["ちから","りっとう","かたな","にんべん"] },
+
+    // ── かんむり（冠）──
+    { char:"宀", name:"うかんむり", strokes:3, category:"かんむり", samples:"空・守・家・宝・安・察", choices:["うかんむり","わかんむり","あなかんむり","なべぶた"] },
+    { char:"艹", name:"くさかんむり", strokes:3, category:"かんむり", samples:"花・草・茶・葉・薬・苦", choices:["くさかんむり","たけかんむり","あめかんむり","うかんむり"] },
+    { char:"竹", name:"たけかんむり", strokes:6, category:"かんむり", samples:"笑・答・箱・筆・節・算", choices:["たけかんむり","くさかんむり","あめかんむり","あなかんむり"] },
+    { char:"雨", name:"あめかんむり", strokes:8, category:"かんむり", samples:"雪・雲・電・霜・霧・露", choices:["あめかんむり","くさかんむり","たけかんむり","うかんむり"] },
+    { char:"穴", name:"あなかんむり", strokes:5, category:"かんむり", samples:"空・窓・窮・突・穿・窒", choices:["あなかんむり","うかんむり","わかんむり","たけかんむり"] },
+
+    // ── あし（脚）──
+    { char:"心", name:"したごころ", strokes:4, category:"あし", samples:"思・感・念・忘・愚・態", choices:["したごころ","りっしんべん","さんずい","きへん"] },
+    { char:"灬", name:"れっか", strokes:4, category:"あし", samples:"熱・照・蒸・然・焦・煮", choices:["れっか","さんずい","ひへん","にすい"] },
+    { char:"皿", name:"さら", strokes:5, category:"あし", samples:"盛・盗・益・盟・監・盤", choices:["さら","くさかんむり","れっか","したごころ"] },
+
+    // ── たれ（垂）──
+    { char:"疒", name:"やまいだれ", strokes:5, category:"たれ", samples:"病・症・痛・癌・疲・瘦", choices:["やまいだれ","まだれ","がんだれ","しかばね"] },
+    { char:"广", name:"まだれ", strokes:3, category:"たれ", samples:"店・庫・床・座・廊・廃", choices:["まだれ","やまいだれ","がんだれ","しかばね"] },
+    { char:"厂", name:"がんだれ", strokes:2, category:"たれ", samples:"原・厚・厳・厘・歴・灰", choices:["がんだれ","まだれ","やまいだれ","しかばね"] },
+    { char:"尸", name:"しかばね", strokes:3, category:"たれ", samples:"居・屋・尾・層・尿・尺", choices:["しかばね","やまいだれ","まだれ","がんだれ"] },
+
+    // ── にょう（繞）──
+    { char:"⻌", name:["しんにゅう","しんにょう"], strokes:3, category:"にょう", samples:"道・進・運・近・遠・通", choices:["しんにゅう","えんにょう","いとにょう","そうにょう"] },
+    { char:"廴", name:"えんにょう", strokes:3, category:"にょう", samples:"建・廷・延・廻・廼・廾", choices:["えんにょう","しんにゅう","いとにょう","そうにょう"] },
+
+    // ── かまえ（構）──
+    { char:"門", name:"もんがまえ", strokes:8, category:"かまえ", samples:"開・閉・問・間・関・聞", choices:["もんがまえ","くにがまえ","しかばね","つつみがまえ"] },
+    { char:"口", name:"くにがまえ", strokes:3, category:"かまえ", samples:"国・図・囲・因・固・困", choices:["くにがまえ","くちへん","もんがまえ","うかんむり"] },
+    { char:"行", name:"ゆきがまえ", strokes:6, category:"かまえ", samples:"街・衛・術・衝・衡・衢", choices:["ゆきがまえ","もんがまえ","くにがまえ","ぎょうにんべん"] },
+
+    // ── その他 ──
+    { char:"戈", name:"たすき", strokes:4, category:"その他", samples:"成・戦・浅・我・感・戒", choices:["たすき","ほこづくり","れっか","さんずい"] },
+    { char:"鬼", name:"おに", strokes:10, category:"その他", samples:"魂・魅・魔・醜・魑・魎", choices:["おに","おおがい","たすき","もんがまえ"] },
+    { char:"頁", name:"おおがい", strokes:9, category:"その他", samples:"顔・頭・題・類・順・項", choices:["おおがい","おに","たすき","もんがまえ"] },
+    { char:"斤", name:"おのづくり", strokes:4, category:"その他", samples:"新・近・断・斬・斧・折", choices:["おのづくり","ちから","りっとう","かたな"] },
+    { char:"示", name:"しめす", strokes:5, category:"その他", samples:"礼・祭・票・禁・禍・祥", choices:["しめす","しめすへん","くさかんむり","れっか"] },
+    { char:"衣", name:"ころも", strokes:6, category:"その他", samples:"初・裏・装・裁・袋・被", choices:["ころも","ころもへん","しめす","さら"] },
+];
+
+// ───── State ─────
+let mode = 'beginner';
+let currentQ = null;
+let score = 0;
+let totalAnswered = 0;
+let correctCount = 0;
+let streak = 0;
+let maxStreak = 0;
+let sessionQ = 0;
+const SESSION_LENGTH = 10;
+let sessionWrongs = [];
+let sessionPool = [];
+let questionsDone = 0;
+let synth = window.speechSynthesis;
+let voices = [];
+
+function loadVoices() { voices = synth.getVoices(); }
+if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+loadVoices();
+
+function speak(text) {
+    if (synth.speaking) synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if (voices.length === 0) loadVoices();
+    const maleVoice = voices.find(v => v.lang.startsWith('ja') && (v.name.includes('Ichiro') || v.name.includes('Male') || v.name.includes('Otoya') || v.name.includes('男')));
+    const jaVoice = voices.find(v => v.lang.startsWith('ja'));
+    u.voice = maleVoice || jaVoice || null;
+    u.pitch = 0.55;
+    u.rate = 1.0;
+    u.volume = 1.0;
+    synth.speak(u);
+}
+
+function initApp() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('main-card').classList.add('visible');
+    const dummy = new SpeechSynthesisUtterance("");
+    synth.speak(dummy);
+    startSession();
+}
+
+function startSession() {
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('main-card').classList.add('visible');
+    score = 0; totalAnswered = 0; correctCount = 0;
+    streak = 0; maxStreak = 0; sessionWrongs = [];
+    questionsDone = 0;
+    sessionPool = shuffleArray([...bushuData]).slice(0, SESSION_LENGTH);
+    updateStats();
+    nextQuestion();
+}
+
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function setMode(m) {
+    mode = m;
+    ['beginner','advanced','review'].forEach(id => {
+        document.getElementById('tab-'+id).classList.toggle('active', id === m);
+    });
+    ['beginner-ui','advanced-ui','review-ui'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById(m+'-ui').style.display = m === 'beginner' ? 'grid' : 'block';
+    document.getElementById('result-message').innerHTML = '';
+    document.getElementById('next-btn').style.display = 'none';
+
+    if (m === 'review') {
+        showReview();
+    } else {
+        nextQuestion();
+    }
+}
+
+function getName(q) {
+    return Array.isArray(q.name) ? q.name[0] : q.name;
+}
+function isCorrectAnswer(q, ans) {
+    if (Array.isArray(q.name)) return q.name.includes(ans.trim());
+    return q.name === ans.trim();
+}
+
+function nextQuestion() {
+    if (mode === 'review') return;
+    if (questionsDone >= SESSION_LENGTH) {
+        showResultScreen();
+        return;
+    }
+    currentQ = sessionPool[questionsDone];
+    document.getElementById('result-message').innerHTML = '';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('answer-input') && (document.getElementById('answer-input').value = '');
+    const inp = document.getElementById('answer-input');
+    if (inp) { inp.className = 'answer-input'; }
+
+    document.getElementById('bushu-char').innerText = currentQ.char;
+    document.getElementById('stroke-info').innerText = currentQ.strokes + '画';
+    document.getElementById('category-badge').innerText = currentQ.category;
+    document.getElementById('hint-text').innerText = currentQ.samples;
+
+    // Progress
+    const pct = (questionsDone / SESSION_LENGTH) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+
+    if (mode === 'beginner') {
+        const ui = document.getElementById('beginner-ui');
+        ui.innerHTML = '';
+        const shuffled = [...currentQ.choices].sort(() => Math.random() - 0.5);
+        shuffled.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.innerText = choice;
+            btn.onclick = () => checkBeginner(choice, btn, shuffled.map((_,i) => ui.children[i]));
+            ui.appendChild(btn);
+        });
+    }
+}
+
+function checkBeginner(choice, clickedBtn, allBtns) {
+    const correct = isCorrectAnswer(currentQ, choice);
+    const btns = document.getElementById('beginner-ui').querySelectorAll('.choice-btn');
+    btns.forEach(b => {
+        b.disabled = true;
+        if (isCorrectAnswer(currentQ, b.innerText)) b.classList.add('correct');
+    });
+    if (!correct) clickedBtn.classList.add('wrong');
+
+    showResult(correct);
+}
+
+function checkAdvanced() {
+    const inp = document.getElementById('answer-input');
+    const val = inp.value.trim();
+    if (!val) return;
+    const correct = isCorrectAnswer(currentQ, val);
+    inp.className = 'answer-input ' + (correct ? 'correct' : 'wrong');
+    showResult(correct);
+}
+
+function showResult(correct) {
+    totalAnswered++;
+    questionsDone++;
+    const msg = document.getElementById('result-message');
+
+    if (correct) {
+        correctCount++;
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+        const bonus = streak >= 5 ? 30 : streak >= 3 ? 20 : 10;
+        score += bonus;
+        const bonusText = streak >= 3 ? ` (+${bonus}pt 🔥×${streak})` : ` (+${bonus}pt)`;
+        msg.innerHTML = `<span class="result-correct">✓ 正解！${bonusText}</span>`;
+        document.getElementById('bushu-char').classList.remove('pop');
+        void document.getElementById('bushu-char').offsetWidth;
+        document.getElementById('bushu-char').classList.add('pop');
+        speak('正解！');
+        if (streak >= 3) launchConfetti();
+    } else {
+        streak = 0;
+        sessionWrongs.push(currentQ);
+        msg.innerHTML = `<span class="result-wrong">✗ 正解：「${getName(currentQ)}」</span>`;
+        document.getElementById('bushu-char').classList.remove('shake');
+        void document.getElementById('bushu-char').offsetWidth;
+        document.getElementById('bushu-char').classList.add('shake');
+    }
+
+    updateStats();
+    document.getElementById('next-btn').style.display = 'block';
+    document.getElementById('next-btn').innerText = questionsDone >= SESSION_LENGTH ? '結果を見る →' : '次の問題へ →';
+}
+
+function updateStats() {
+    document.getElementById('score-display').innerText = score;
+    document.getElementById('streak-display').innerText = streak;
+    const acc = totalAnswered > 0 ? Math.round(correctCount / totalAnswered * 100) + '%' : '—';
+    document.getElementById('acc-display').innerText = acc;
+}
+
+function showReview() {
+    const reviewEl = document.getElementById('review-list');
+    reviewEl.innerHTML = '';
+    const items = sessionWrongs.length > 0 ? sessionWrongs : bushuData.slice(0, 5);
+    if (sessionWrongs.length === 0) {
+        reviewEl.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">間違いはまだありません。問題を解いてみましょう！</p>';
+        return;
+    }
+    items.forEach(q => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;background:white;border-radius:10px;border:1.5px solid #fce0e0;margin-bottom:8px;';
+        div.innerHTML = `
+            <span style="font-family:'Noto Serif JP',serif;font-size:2rem;font-weight:900;color:#1a1a2e;min-width:40px;text-align:center;">${q.char}</span>
+            <div>
+                <div style="font-weight:700;color:#c0392b;">→ ${getName(q)}</div>
+                <div style="font-size:0.75rem;color:#888;">${q.strokes}画 ／ ${q.samples}</div>
+            </div>
+        `;
+        reviewEl.appendChild(div);
+    });
+}
+
+function showResultScreen() {
+    document.getElementById('main-card').classList.remove('visible');
+    const rs = document.getElementById('result-screen');
+    rs.style.display = 'block';
+    const pct = Math.round(correctCount / SESSION_LENGTH * 100);
+    document.getElementById('final-score').innerText = pct + '%';
+    document.getElementById('final-score-sub').innerText = `${SESSION_LENGTH}問中 ${correctCount}問正解`;
+    document.getElementById('final-streak').innerText = maxStreak;
+    document.getElementById('final-points').innerText = score + 'pt';
+
+    let grade = '';
+    if (pct === 100) grade = '🏆 満点！完璧です！';
+    else if (pct >= 80) grade = '🥇 素晴らしい！';
+    else if (pct >= 60) grade = '🥈 よくできました！';
+    else if (pct >= 40) grade = '🥉 もう少し！';
+    else grade = '📖 復習を頑張りましょう！';
+    document.getElementById('final-grade').innerText = grade;
+
+    if (sessionWrongs.length > 0) {
+        document.getElementById('final-wrongs').innerText = sessionWrongs.map(q => `${q.char}（${getName(q)}）`).join('　');
+    } else {
+        document.getElementById('final-wrongs').innerText = 'なし（全問正解！）';
+    }
+
+    if (pct >= 80) launchConfetti(80);
+}
+
+function launchConfetti(count = 30) {
+    const colors = ['#d4a017','#c0392b','#27ae60','#2980b9','#8e44ad','#f39c12'];
+    for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+        el.style.animationDelay = (Math.random() * 0.5) + 's';
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+    }
+}
+
+// Enter key for advanced mode
+document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && mode === 'advanced') {
+        const nb = document.getElementById('next-btn');
+        if (nb.style.display !== 'none') { nextQuestion(); }
+        else { checkAdvanced(); }
+    }
+});
+</script>
+</body>
+</html>
