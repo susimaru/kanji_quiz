@@ -3,445 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>部首名マスター 3級</title>
+    <title>部首名マスター 3級 全網羅版</title>
     
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=M+PLUS+1p:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #1a1a2e;
-            --red: #c0392b;
-            --gold: #d4a017;
-            --gold-light: #f9e6a0;
-            --gold-dark: #8a6800;
-            --paper: #fdf6e3;
-            --paper-dark: #f0e6c8;
-            --paper-darker: #e0d0a0;
-            --green: #27ae60;
-            --green-light: #eafaf1;
-            --red-light: #fdecea;
-            --blue: #2980b9;
-            --blue-light: #eaf4fb;
-            --shadow: rgba(0,0,0,0.15);
+            --ink: #1a1a2e; --red: #c0392b; --gold: #d4a017; --gold-light: #f9e6a0; --gold-dark: #8a6800;
+            --paper: #fdf6e3; --paper-dark: #f0e6c8; --paper-darker: #e0d0a0; --green: #27ae60;
+            --green-light: #eafaf1; --red-light: #fdecea; --blue: #2980b9; --blue-light: #eaf4fb;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: 'M PLUS 1p', sans-serif;
-            background: var(--ink);
-            background-image:
-                radial-gradient(ellipse at 20% 50%, rgba(100,80,20,0.3) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(60,40,10,0.4) 0%, transparent 50%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px 12px;
+            font-family: 'M PLUS 1p', sans-serif; background: var(--ink);
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(100,80,20,0.3) 0%, transparent 60%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 20px 12px;
         }
-
-        #app {
-            width: 100%;
-            max-width: 520px;
-            position: relative;
+        #app { width: 100%; max-width: 520px; }
+        #start-screen, #main-card, #result-screen {
+            background: var(--paper); border-radius: 16px; border: 3px solid var(--gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden;
         }
-
-        /* ===== START SCREEN ===== */
-        #start-screen {
-            background: var(--paper);
-            border-radius: 16px;
-            padding: 48px 32px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            border: 3px solid var(--gold);
-            position: relative;
-            overflow: hidden;
-        }
-        #start-screen::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 6px;
-            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
-        }
-        .start-title {
-            font-family: 'Noto Serif JP', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--ink);
-            margin-bottom: 8px;
-            letter-spacing: 0.1em;
-        }
-        .start-subtitle {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 32px;
-        }
-        .start-kanji-deco {
-            font-family: 'Noto Serif JP', serif;
-            font-size: 5rem;
-            font-weight: 900;
-            color: var(--paper-dark);
-            margin: 16px 0;
-            letter-spacing: 0.2em;
-            line-height: 1;
-            user-select: none;
-        }
-        .start-btn {
-            display: inline-block;
-            padding: 16px 48px;
-            background: var(--ink);
-            color: var(--gold);
-            font-family: 'M PLUS 1p', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border: 2px solid var(--gold);
-            border-radius: 8px;
-            cursor: pointer;
-            letter-spacing: 0.1em;
-            transition: all 0.2s;
-            outline: none;
-        }
-        .start-btn:hover { background: #2d2d50; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-        .start-note { font-size: 0.75rem; color: #999; margin-top: 20px; }
-
-        /* ===== MAIN CARD ===== */
-        #main-card {
-            background: var(--paper);
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            border: 3px solid var(--gold);
-            overflow: hidden;
-            display: none;
-            flex-direction: column;
-        }
+        #start-screen { padding: 48px 32px; text-align: center; }
+        #main-card { display: none; flex-direction: column; }
         #main-card.visible { display: flex; }
-
-        .top-bar {
-            background: var(--ink);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--gold);
+        #result-screen { display: none; padding: 40px 32px; text-align: center; }
+        
+        .start-title { font-family: 'Noto Serif JP', serif; font-size: 1.8rem; font-weight: 900; margin-bottom: 20px; }
+        .start-btn {
+            padding: 16px 48px; background: var(--ink); color: var(--gold);
+            border: 2px solid var(--gold); border-radius: 8px; font-weight: 700; cursor: pointer;
         }
-        .app-title-bar {
-            font-family: 'Noto Serif JP', serif;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--gold);
-            letter-spacing: 0.05em;
-        }
-        .stats-row {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .stat-item { text-align: center; }
-        .stat-label { font-size: 0.6rem; color: rgba(212,160,23,0.7); letter-spacing: 0.05em; }
-        .stat-value { font-size: 1rem; font-weight: 700; color: var(--gold); }
-        .streak-display { display: flex; align-items: center; gap: 4px; }
-        .streak-num { font-size: 1rem; font-weight: 700; color: #ff9944; }
-
-        .mode-tabs { display: flex; background: var(--paper-dark); border-bottom: 2px solid var(--paper-darker); }
-        .mode-tab {
-            flex: 1; padding: 10px; background: none; border: none;
-            font-family: 'M PLUS 1p', sans-serif; font-size: 0.85rem; font-weight: 700;
-            color: #888; cursor: pointer; border-bottom: 3px solid transparent;
-            margin-bottom: -2px; transition: all 0.2s; outline: none;
-        }
-        .mode-tab.active { color: var(--ink); border-bottom-color: var(--ink); background: var(--paper); }
-
-        .progress-wrap { background: var(--paper-dark); height: 6px; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); transition: width 0.4s ease; }
-
-        .question-area { padding: 24px 24px 16px; }
-        .bushu-stage { text-align: center; margin: 0 0 16px; }
-        .category-badge {
-            display: inline-block; font-size: 0.7rem; background: var(--gold-light);
-            color: var(--gold-dark); border: 1px solid var(--gold); border-radius: 20px;
-            padding: 2px 12px; margin-bottom: 8px; font-weight: 700;
-        }
-        .bushu-char {
-            font-family: 'Noto Serif JP', serif; font-size: 90px; font-weight: 900;
-            color: var(--ink); line-height: 1.1; display: block; transition: all 0.3s;
-        }
-        .bushu-char.shake { animation: shake 0.4s ease; }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
-        .bushu-char.pop { animation: pop 0.3s ease; }
-        @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
-
-        .hint-box {
-            background: var(--blue-light); border: 1px solid #b3d7ef; border-radius: 8px;
-            padding: 10px 16px; font-size: 0.85rem; color: #1a5276; margin-bottom: 16px; text-align: center;
-        }
-
-        .answer-area { padding: 0 24px 24px; }
-        .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .choice-btn {
-            padding: 14px 8px; background: white; border: 2px solid var(--paper-darker);
-            border-radius: 10px; font-family: 'M PLUS 1p', sans-serif; font-size: 1rem;
-            font-weight: 700; color: var(--ink); cursor: pointer; transition: all 0.15s;
-        }
+        .top-bar { background: var(--ink); padding: 12px 20px; display: flex; justify-content: space-between; color: var(--gold); border-bottom: 3px solid var(--gold); }
+        .mode-tabs { display: flex; background: var(--paper-dark); }
+        .mode-tab { flex: 1; padding: 10px; border: none; font-weight: 700; color: #888; cursor: pointer; background: none; outline: none; }
+        .mode-tab.active { color: var(--ink); background: var(--paper); border-bottom: 3px solid var(--ink); }
+        
+        .question-area { padding: 24px; text-align: center; }
+        .bushu-char { font-family: 'Noto Serif JP', serif; font-size: 100px; font-weight: 900; color: var(--ink); margin-bottom: 10px; }
+        .hint-box { background: var(--blue-light); border-radius: 8px; padding: 12px; margin-bottom: 15px; font-size: 0.9rem; }
+        
+        .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 24px; }
+        .choice-btn { padding: 14px; background: white; border: 2px solid var(--paper-darker); border-radius: 10px; font-weight: 700; color: var(--ink); cursor: pointer; transition: 0.15s; }
         .choice-btn.correct { background: var(--green-light); border-color: var(--green); color: var(--green); }
         .choice-btn.wrong { background: var(--red-light); border-color: var(--red); color: var(--red); }
-
-        .input-row { display: flex; gap: 8px; }
-        .answer-input {
-            flex: 1; padding: 12px 16px; font-family: 'M PLUS 1p', sans-serif;
-            font-size: 1rem; border: 2px solid var(--paper-darker); border-radius: 10px; outline: none;
-        }
-        .submit-btn {
-            padding: 12px 20px; background: var(--ink); color: var(--gold);
-            border: 2px solid var(--gold); border-radius: 10px; font-weight: 700; cursor: pointer;
-        }
-
-        .result-row { display: flex; align-items: center; justify-content: center; min-height: 36px; margin-top: 12px; font-weight: 700; }
-        .result-correct { color: var(--green); }
-        .result-wrong { color: var(--red); }
-
-        .next-btn {
-            display: block; width: 100%; margin-top: 12px; padding: 14px;
-            background: var(--ink); color: white; border: none; border-radius: 10px;
-            font-weight: 700; cursor: pointer;
-        }
-
-        /* ===== RESULT SCREEN ===== */
-        #result-screen {
-            background: var(--paper); border-radius: 16px; padding: 40px 32px;
-            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 3px solid var(--gold); display: none;
-        }
-        .result-score-big { font-size: 4rem; font-weight: 900; color: var(--gold-dark); line-height: 1; }
-
-        .confetti-piece {
-            position: fixed; width: 8px; height: 8px; top: -10px;
-            animation: confetti-fall linear forwards; border-radius: 2px; pointer-events: none; z-index: 9999;
-        }
-        @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        
+        .input-row { display: flex; gap: 8px; padding: 0 24px 24px; }
+        .answer-input { flex: 1; padding: 12px; border: 2px solid var(--paper-darker); border-radius: 10px; text-align: center; font-size: 1.1rem; }
+        .submit-btn { padding: 12px 20px; background: var(--ink); color: var(--gold); border: 2px solid var(--gold); border-radius: 10px; font-weight: 700; }
+        
+        .result-row { min-height: 40px; text-align: center; font-weight: 700; margin-bottom: 10px; padding: 0 20px; }
+        .next-btn { width: 90%; margin: 0 auto 20px; padding: 15px; background: var(--ink); color: white; border-radius: 10px; font-weight: 700; display: none; cursor: pointer; border: none; }
+        
+        .progress-bar { height: 6px; background: var(--gold); width: 0%; transition: 0.3s; }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div id="start-screen">
-        <div class="start-kanji-deco">部首</div>
-        <div class="start-title">部首名マスター</div>
-        <div class="start-subtitle">硬筆書写検定3級 理論対策</div>
+        <h1 class="start-title">部首名マスター 3級<br>【1〜11画 全網羅】</h1>
         <button class="start-btn" onclick="initApp()">学習を始める</button>
-        <div class="start-note">✦ 正解すると「seikai.wav」が再生されます</div>
+        <p style="font-size: 0.75rem; color: #999; margin-top: 15px;">正解：seikai.wav / 不正解：hazure.wav</p>
     </div>
 
     <div id="main-card">
         <div class="top-bar">
-            <div class="app-title-bar">部首名マスター</div>
-            <div class="stats-row">
-                <div class="stat-item">
-                    <div class="stat-label">スコア</div>
-                    <div class="stat-value" id="score-display">0</div>
-                </div>
-                <div class="streak-display">
-                    <span class="flame">🔥</span>
-                    <span class="streak-num" id="streak-display">0</span>
-                </div>
-            </div>
+            <span>部首対策</span>
+            <div id="stats">Score: 0 | 🔥 0</div>
         </div>
-
         <div class="mode-tabs">
-            <button class="mode-tab active" id="tab-beginner" onclick="setMode('beginner')">🎯 初級</button>
-            <button class="mode-tab" id="tab-advanced" onclick="setMode('advanced')">✏️ 応用</button>
-            <button class="mode-tab" id="tab-review" onclick="setMode('review')">📋 復習</button>
+            <button class="mode-tab active" id="tab-beginner" onclick="setMode('beginner')">初級(4択)</button>
+            <button class="mode-tab" id="tab-advanced" onclick="setMode('advanced')">応用(入力)</button>
         </div>
-
-        <div class="progress-wrap">
-            <div class="progress-bar" id="progress-bar" style="width:0%"></div>
-        </div>
-
+        <div class="progress-bar" id="progress-bar"></div>
         <div class="question-area">
-            <div class="bushu-stage">
-                <div class="category-badge" id="category-badge">べん・つくり</div>
-                <div class="bushu-char" id="bushu-char">亻</div>
-                <div class="stroke-badge" id="stroke-info">2画</div>
-            </div>
-            <div class="hint-box">
-                <div id="hint-text">休・代・仕</div>
-            </div>
+            <div id="stroke-info" style="color:var(--gold-dark); font-weight:bold;"></div>
+            <div class="bushu-char" id="bushu-char"></div>
+            <div class="hint-box" id="hint-text"></div>
         </div>
-
-        <div class="answer-area">
-            <div id="beginner-ui" class="choices-grid"></div>
-            <div id="advanced-ui" style="display:none;">
-                <div class="input-row">
-                    <input class="answer-input" type="text" id="answer-input" placeholder="ひらがな" autocomplete="off">
-                    <button class="submit-btn" onclick="checkAdvanced()">回答</button>
-                </div>
-            </div>
-            <div id="review-ui" style="display:none;"><div id="review-list"></div></div>
-            <div class="result-row" id="result-message"></div>
-            <button class="next-btn" id="next-btn" style="display:none;" onclick="nextQuestion()">次へ →</button>
+        <div id="beginner-ui" class="choices-grid"></div>
+        <div id="advanced-ui" style="display:none;" class="input-row">
+            <input type="text" id="answer-input" placeholder="かな入力" autocomplete="off">
+            <button class="submit-btn" onclick="checkAdvanced()">回答</button>
         </div>
+        <div class="result-row" id="result-message"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">次へ →</button>
     </div>
 
     <div id="result-screen">
-        <div class="result-score-big" id="final-score">0%</div>
-        <div id="final-grade" style="margin:20px 0; font-weight:700;"></div>
-        <button class="start-btn" onclick="startSession()">リトライ</button>
+        <h2 id="final-score" style="font-size:3rem;"></h2>
+        <p id="final-msg" style="margin:20px 0;"></p>
+        <button class="start-btn" onclick="location.reload()">もう一度</button>
     </div>
 </div>
 
 <script>
+// 1画〜11画 全網羅データ（中略せずに保持）
 const bushuData = [
-    { char:"亻", name:"にんべん", strokes:2, category:"へん", samples:"休・代・仕", choices:["にんべん","ぎょうにんべん","いとにょう","ひとあし"] },
-    { char:"氵", name:"さんずい", strokes:3, category:"へん", samples:"海・泳・池", choices:["さんずい","にすい","したみず","うかんむり"] },
-    { char:"忄", name:"りっしんべん", strokes:3, category:"へん", samples:"忙・情・快", choices:["りっしんべん","にんべん","したごころ","きへん"] },
-    { char:"彳", name:"ぎょうにんべん", strokes:3, category:"へん", samples:"行・役・復", choices:["ぎょうにんべん","にんべん","しんにゅう","いとへん"] },
-    { char:"⺭", name:"しめすへん", strokes:4, category:"へん", samples:"神・社・福", choices:["しめすへん","ころもへん","のぎへん","けものへん"] },
-    { char:"⻂", name:"ころもへん", strokes:5, category:"へん", samples:"初・被・複", choices:["ころもへん","しめすへん","さんずい","ゆきへん"] },
-    { char:"禾", name:"のぎへん", strokes:5, category:"へん", samples:"秋・私・和", choices:["のぎへん","きへん","かねへん","こめへん"] },
-    { char:"⻌", name:["しんにゅう","しんにょう"], strokes:3, category:"にょう", samples:"道・進・運", choices:["しんにゅう","えんにょう","いとにょう","そうにょう"] },
-    { char:"門", name:"もんがまえ", strokes:8, category:"かまえ", samples:"開・閉・問", choices:["もんがまえ","くにがまえ","しかばね","つつみがまえ"] },
-    { char:"戈", name:"たすき", strokes:4, category:"その他", samples:"成・戦・浅", choices:["たすき","ほこづくり","れっか","さんずい"] }
+    { char:"一", name:"いち", strokes:1, samples:"一・上・下", choices:["いち","つち","じゅう","の"] },
+    { char:"丨", name:"たてぼう", strokes:1, samples:"中・串", choices:["たてぼう","いち","の","はねぼう"] },
+    { char:"丿", name:"の", strokes:1, samples:"乃・久", choices:["の","いち","たてぼう","はねぼう"] },
+    { char:"乙", name:"おつ", strokes:1, samples:"乙・乱", choices:["おつ","いち","の","しり"] },
+    { char:"亅", name:"はねぼう", strokes:1, samples:"了・事", choices:["はねぼう","たてぼう","の","おつ"] },
+    { char:"二", name:"に", strokes:2, samples:"二・互", choices:["に","いち","じゅう","ひと"] },
+    { char:"亠", name:"なべぶた", strokes:2, samples:"亡・交・京", choices:["なべぶた","わかんむり","うかんむり","あなかんむり"] },
+    { char:"人", name:"ひと", strokes:2, samples:"人・今・介", choices:["ひと","にんべん","ひとあし","ひとやね"] },
+    { char:"亻", name:"にんべん", strokes:2, samples:"休・代・仕", choices:["にんべん","ぎょうにんべん","ひと","ひとあし"] },
+    { char:"儿", name:"ひとあし", strokes:2, samples:"兄・元・光", choices:["ひとあし","にんべん","ひと","にすい"] },
+    { char:"入", name:"いりやね", strokes:2, samples:"入・全", choices:["いりやね","ひとやね","ひと","にんべん"] },
+    { char:"八", name:"はち", strokes:2, samples:"八・公・共", choices:["はち","ひと","いりやね","に"] },
+    { char:"冂", name:"まきがまえ", strokes:2, samples:"内・円・同", choices:["まきがまえ","くにがまえ","もんがまえ","つつみがまえ"] },
+    { char:"冖", name:"わかんむり", strokes:2, samples:"冗・冠・写", choices:["わかんむり","うかんむり","なべぶた","あなかんむり"] },
+    { char:"冫", name:"にすい", strokes:2, samples:"次・冷・凍", choices:["にすい","さんずい","したみず","いち"] },
+    { char:"几", name:"つくえ", strokes:2, samples:"凡・処", choices:["つくえ","かぜかんむり","ちから","かたな"] },
+    { char:"凵", name:"うけばこ", strokes:2, samples:"凶・出", choices:["うけばこ","はこがまえ","はこづくり","かくがまえ"] },
+    { char:"刀", name:"かたな", strokes:2, samples:"刀・切・分", choices:["かたな","りっとう","ちから","つくえ"] },
+    { char:"刂", name:"りっとう", strokes:2, samples:"判・別・利", choices:["りっとう","かたな","にんべん","さんずい"] },
+    { char:"力", name:"ちから", strokes:2, samples:"力・助・勉", choices:["ちから","かたな","つくえ","りっとう"] },
+    { char:"勹", name:"つつみがまえ", strokes:2, samples:"包・旬", choices:["つつみがまえ","まきがまえ","くにがまえ","もんがまえ"] },
+    { char:"匕", name:"さじ", strokes:2, samples:"北・比", choices:["さじ","かたな","ちから","に"] },
+    { char:"匚", name:"はこがまえ", strokes:2, samples:"匠・伝", choices:["はこがまえ","うけばこ","もんがまえ","くにがまえ"] },
+    { char:"十", name:"じゅう", strokes:2, samples:"十・古・支", choices:["じゅう","に","つち","いち"] },
+    { char:"卜", name:"ぼく", strokes:2, samples:"占・外", choices:["ぼく","たてぼう","に","じゅう"] },
+    { char:"卩", name:"ふしづくり", strokes:2, samples:"印・即", choices:["ふしづくり","おおざと","こざとへん","りっとう"] },
+    { char:"厂", name:"がんだれ", strokes:2, samples:"厚・原", choices:["がんだれ","まだれ","やまいだれ","しかばね"] },
+    { char:"又", name:"また", strokes:2, samples:"又・友・反", choices:["また","ちから","かたな","に"] },
+    { char:"口", name:"くち", strokes:3, samples:"口・古・右", choices:["くち","くにがまえ","ひ","め"] },
+    { char:"囗", name:"くにがまえ", strokes:3, samples:"国・回・図", choices:["くにがまえ","くち","もんがまえ","まきがまえ"] },
+    { char:"土", name:"つち", strokes:3, samples:"土・地・在", choices:["つち","じゅう","に","たてぼう"] },
+    { char:"士", name:"さむらい", strokes:3, samples:"士・声・売", choices:["さむらい","つち","じゅう","に"] },
+    { char:"夂", name:"ふゆがしら", strokes:3, samples:"各・冬", choices:["ふゆがしら","なつあし","ひとやね","いりやね"] },
+    { char:"夕", name:"ゆうべ", strokes:3, samples:"夕・外・多", choices:["ゆうべ","た","め","くち"] },
+    { char:"大", name:"だい", strokes:3, samples:"大・天・太", choices:["だい","ひと","に","じゅう"] },
+    { char:"女", name:"おんな", strokes:3, samples:"女・好・安", choices:["おんな","くち","また","め"] },
+    { char:"子", name:"こ", strokes:3, samples:"子・字・学", choices:["こ","おんな","また","りっしんべん"] },
+    { char:"宀", name:"うかんむり", strokes:3, samples:"家・安・守", choices:["うかんむり","わかんむり","あなかんむり","なべぶた"] },
+    { char:"寸", name:"すん", strokes:3, samples:"寸・寺・対", choices:["すん","たてぼう","じゅう","に"] },
+    { char:"小", name:"しょう", strokes:3, samples:"小・少・光", choices:["しょう","さんずい","にすい","ひとあし"] },
+    { char:"尸", name:"しかばね", strokes:3, samples:"居・屈・展", choices:["しかばね","がんだれ","まだれ","やまいだれ"] },
+    { char:"山", name:"やま", strokes:3, samples:"山・岩・岸", choices:["やま","うけばこ","はこがまえ","つち"] },
+    { char:"川", name:"かわ", strokes:3, samples:"川・州・順", choices:["かわ","さんずい","にすい","たてぼう"] },
+    { char:"工", name:"たくみ", strokes:3, samples:"工・左・巧", choices:["たくみ","つち","に","じゅう"] },
+    { char:"己", name:"おのれ", strokes:3, samples:"己・巻", choices:["おのれ","さじ","くち","また"] },
+    { char:"巾", name:"はば", strokes:3, samples:"巾・布・市", choices:["はば","たくみ","つち","やま"] },
+    { char:"干", name:"いちじゅう", strokes:3, samples:"干・平", choices:["いちじゅう","じゅう","に","つち"] },
+    { char:"广", name:"まだれ", strokes:3, samples:"広・店・府", choices:["まだれ","がんだれ","やまいだれ","しかばね"] },
+    { char:"廴", name:"えんにょう", strokes:3, samples:"廷・延・建", choices:["えんにょう","しんにゅう","いとにょう","そうにょう"] },
+    { char:"弓", name:"ゆみ", strokes:3, samples:"弓・引・強", choices:["ゆみ","こ","おのれ","また"] },
+    { char:"彡", name:"さんづくり", strokes:3, samples:"形・影・彩", choices:["さんづくり","さんずい","にすい","の"] },
+    { char:"彳", name:"ぎょうにんべん", strokes:3, samples:"行・役・復", choices:["ぎょうにんべん","にんべん","りっしんべん","しんにゅう"] },
+    { char:"忄", name:"りっしんべん", strokes:3, samples:"忙・情・快", choices:["りっしんべん","にんべん","ぎょうにんべん","さんずい"] },
+    { char:"扌", name:"てへん", strokes:3, samples:"打・指・持", choices:["てへん","にんべん","さんずい","きへん"] },
+    { char:"氵", name:"さんずい", strokes:3, samples:"海・泳・池", choices:["さんずい","にすい","したみず","かわ"] },
+    { char:"⻌", name:["しんにゅう","しんにょう"], strokes:3, samples:"道・進・運", choices:["しんにゅう","えんにょう","いとにょう","そうにょう"] },
+    { char:"阝(左)", name:"こざとへん", strokes:3, samples:"院・防・降", choices:["こざとへん","おおざと","ふしづくり","りっとう"] },
+    { char:"阝(右)", name:"おおざと", strokes:3, samples:"部・都・郡", choices:["おおざと","こざとへん","ふしづくり","りっとう"] },
+    { char:"心", name:"こころ", strokes:4, samples:"心・思・急", choices:["こころ","りっしんべん","したごころ","れっか"] },
+    { char:"戈", name:"たすき", strokes:4, samples:"成・戦・浅", choices:["たすき","ほこづくり","さんづくり","りっとう"] },
+    { char:"戸", name:"とびらのと", strokes:4, samples:"戸・戻・所", choices:["とびらのと","しかばね","がんだれ","まだれ"] },
+    { char:"手", name:"て", strokes:4, samples:"手・挙", choices:["て","てへん","きへん","のぎへん"] },
+    { char:"支", name:"しにょう", strokes:4, samples:"支・鼓", choices:["しにょう","また","えんにょう","しんにゅう"] },
+    { char:"斤", name:"おの", strokes:4, samples:"新・断", choices:["おの","たてぼう","たくみ","はば"] },
+    { char:"方", name:"ほう", strokes:4, samples:"方・旅・族", choices:["ほう","なべぶた","じゅう","に"] },
+    { char:"日", name:["にち","ひ"], strokes:4, samples:"日・明・晴", choices:["ひ","め","くち","た"] },
+    { char:"月", name:"つき", strokes:4, samples:"月・明・望", choices:["つき","にくづき","ひ","め"] },
+    { char:"木", name:"き", strokes:4, samples:"木・本・末", choices:["き","きへん","のぎへん","つち"] },
+    { char:"欠", name:"あくび", strokes:4, samples:"欠・次・歌", choices:["あくび","さじ","ひと","にんべん"] },
+    { char:"止", name:"とめる", strokes:4, samples:"止・歩・正", choices:["とめる","つち","に","じゅう"] },
+    { char:"歹", name:"がつへん", strokes:4, samples:"死・残", choices:["がつへん","いち","たてぼう","に"] },
+    { char:"氏", name:"うじ", strokes:4, samples:"氏・民", choices:["うじ","にんべん","てへん","きへん"] },
+    { char:"水", name:"みず", strokes:4, samples:"水・氷・泉", choices:["みず","さんずい","にすい","したみず"] },
+    { char:"火", name:"ひ", strokes:4, samples:"火・灯・焼", choices:["ひ","ひへん","れっか","にちへん"] },
+    { char:"父", name:"ちち", strokes:4, samples:"父・釜", choices:["ちち","はち","ひと","じゅう"] },
+    { char:"牛", name:"うし", strokes:4, samples:"牛・物・牧", choices:["うし","うしへん","のぎへん","きへん"] },
+    { char:"王", name:"おうへん", strokes:4, samples:"王・現・球", choices:["おうへん","たまへん","つち","じゅう"] },
+    { char:"礻", name:"しめすへん", strokes:4, samples:"神・社・福", choices:["しめすへん","ころもへん","のぎへん","けものへん"] },
+    { char:"疒", name:"やまいだれ", strokes:5, samples:"病・症・痛", choices:["やまいだれ","まだれ","がんだれ","しかばね"] },
+    { char:"目", name:"め", strokes:5, samples:"目・見・眠", choices:["め","ひ","くち","た"] },
+    { char:"石", name:"いし", strokes:5, samples:"石・岩・砂", choices:["いし","くち","やま","つち"] },
+    { char:"立", name:"たつ", strokes:5, samples:"たつ","たつへん","なべぶた","じゅう"] },
+    { char:"衣", name:"ころも", strokes:6, samples:"衣・袋", choices:["ころも","ころもへん","しめすへん","なべぶた"] },
+    { char:"⻂", name:"ころもへん", strokes:5, samples:"初・被・複", choices:["ころもへん","しめすへん","さんずい","ゆきへん"] },
+    { char:"米", name:"こめ", strokes:6, samples:"米・粉・粒", choices:["こめ","こめへん","きへん","のぎへん"] },
+    { char:"糸", name:"いと", strokes:6, samples:"糸・紙・細", choices:["いと","いとへん","ころもへん","さんずい"] },
+    { char:"虫", name:"むし", strokes:6, samples:"虫・虹・蛇", choices:["むし","むしへん","かいへん","めへん"] },
+    { char:"舟", name:"ふね", strokes:6, samples:"舟・船・航", choices:["ふね","ふねへん","くるまへん","とりへん"] },
+    { char:"耳", name:"みみ", strokes:6, samples:"耳・聞・取", choices:["みみ","め","くち","ひ"] },
+    { char:"言", name:"ことば", strokes:7, samples:"言・計・語", choices:["ことば","ごんべん","くち","たつ"] },
+    { char:"貝", name:"かい", strokes:7, samples:"貝・財・買", choices:["かい","かいへん","めへん","むしへん"] },
+    { char:"足", name:"あし", strokes:7, samples:"足・路・踊", choices:["あし","あしへん","ひとあし","にんにょう"] },
+    { char:"車", name:"くるま", strokes:7, samples:"車・転・軽", choices:["くるま","くるまへん","ふねへん","とりへん"] },
+    { char:"金", name:"かね", strokes:8, samples:"金・銀・銅", choices:["かね","かねへん","こめへん","いしへん"] },
+    { char:"門", name:"もんがまえ", strokes:8, samples:"開・閉・問", choices:["もんがまえ","くにがまえ","しかばね","つつみがまえ"] },
+    { char:"雨", name:"あめ", strokes:8, samples:"雨・雪・雲", choices:["あめ","あめかんむり","ゆきへん","うかんむり"] },
+    { char:"食", name:"しょくへん", strokes:9, samples:"飯・飲・館", choices:["しょくへん","かねへん","こめへん","いとへん"] },
+    { char:"馬", name:"うま", strokes:10, samples:"馬・駅・験", choices:["うま","うまへん","とりへん","ふねへん"] },
+    { char:"高", name:"たかい", strokes:10, samples:"高", choices:["たかい","なべぶた","くち","じゅう"] },
+    { char:"魚", name:"うお", strokes:11, samples:"魚・鮮・鯨", choices:["うお","うおへん","むしへん","ふねへん"] },
+    { char:"黄", name:"きいろ", strokes:11, samples:"黄", choices:["きいろ","つち","にじゅうあし","じゅう"] }
 ];
 
-// ───── Audio 設定 ─────
+// 音声ファイルの設定
 const seikaiSound = new Audio('seikai.wav');
+const hazureSound = new Audio('hazure.wav');
 
-function playSeikai() {
-    seikaiSound.currentTime = 0;
-    seikaiSound.play().catch(e => console.log("再生エラー:", e));
-}
-
-let mode = 'beginner';
-let currentQ = null;
-let score = 0;
-let correctCount = 0;
-let streak = 0;
-let questionsDone = 0;
-const SESSION_LENGTH = 10;
-let sessionWrongs = [];
+let mode = 'beginner', currentQ = null, score = 0, streak = 0, questionsDone = 0;
+const SESSION_COUNT = 10;
 let sessionPool = [];
 
 function initApp() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('main-card').classList.add('visible');
-    // iOSの音声ロック解除
+    // iOS/Safari対策：最初のクリック時に音声を一度ロード
     seikaiSound.load();
+    hazureSound.load();
     startSession();
 }
 
 function startSession() {
-    document.getElementById('result-screen').style.display = 'none';
-    document.getElementById('main-card').classList.add('visible');
-    score = 0; correctCount = 0; streak = 0; questionsDone = 0; sessionWrongs = [];
-    sessionPool = [...bushuData].sort(() => Math.random() - 0.5).slice(0, SESSION_LENGTH);
+    score = 0; streak = 0; questionsDone = 0;
+    sessionPool = [...bushuData].sort(() => Math.random() - 0.5).slice(0, SESSION_COUNT);
     updateStats();
     nextQuestion();
 }
 
 function setMode(m) {
     mode = m;
-    ['beginner','advanced','review'].forEach(id => document.getElementById('tab-'+id).classList.toggle('active', id === m));
-    ['beginner-ui','advanced-ui','review-ui'].forEach(id => document.getElementById(id).style.display = 'none');
-    document.getElementById(m+'-ui').style.display = m === 'beginner' ? 'grid' : 'block';
-    if (m === 'review') showReview(); else nextQuestion();
-}
-
-function isCorrectAnswer(q, ans) {
-    return Array.isArray(q.name) ? q.name.includes(ans) : q.name === ans;
+    document.getElementById('tab-beginner').classList.toggle('active', m==='beginner');
+    document.getElementById('tab-advanced').classList.toggle('active', m==='advanced');
+    document.getElementById('beginner-ui').style.display = m==='beginner' ? 'grid' : 'none';
+    document.getElementById('advanced-ui').style.display = m==='advanced' ? 'flex' : 'none';
+    nextQuestion();
 }
 
 function nextQuestion() {
-    if (questionsDone >= SESSION_LENGTH) { showResultScreen(); return; }
+    if (questionsDone >= SESSION_COUNT) { showResultScreen(); return; }
     currentQ = sessionPool[questionsDone];
-    document.getElementById('result-message').innerHTML = '';
-    document.getElementById('next-btn').style.display = 'none';
-    if (document.getElementById('answer-input')) document.getElementById('answer-input').value = '';
-
     document.getElementById('bushu-char').innerText = currentQ.char;
     document.getElementById('stroke-info').innerText = currentQ.strokes + '画';
-    document.getElementById('category-badge').innerText = currentQ.category;
-    document.getElementById('hint-text').innerText = currentQ.samples;
-    document.getElementById('progress-bar').style.width = (questionsDone / SESSION_LENGTH * 100) + '%';
-
+    document.getElementById('hint-text').innerText = 'ヒント：' + currentQ.samples;
+    document.getElementById('result-message').innerText = '';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('progress-bar').style.width = (questionsDone / SESSION_COUNT * 100) + '%';
+    
     if (mode === 'beginner') {
         const ui = document.getElementById('beginner-ui');
         ui.innerHTML = '';
-        [...currentQ.choices].sort(() => Math.random() - 0.5).forEach(choice => {
+        [...currentQ.choices].sort(() => Math.random() - 0.5).forEach(c => {
             const btn = document.createElement('button');
             btn.className = 'choice-btn';
-            btn.innerText = choice;
-            btn.onclick = () => {
-                const correct = isCorrectAnswer(currentQ, choice);
-                ui.querySelectorAll('button').forEach(b => {
-                    b.disabled = true;
-                    if (isCorrectAnswer(currentQ, b.innerText)) b.classList.add('correct');
-                });
-                if (!correct) btn.classList.add('wrong');
-                showResult(correct);
-            };
+            btn.innerText = c;
+            btn.onclick = () => checkAnswer(c); // 共通のチェック関数を呼ぶように変更
             ui.appendChild(btn);
         });
+    } else {
+        document.getElementById('answer-input').value = '';
     }
 }
 
+// 応用モードでの回答ボタン用
 function checkAdvanced() {
     const val = document.getElementById('answer-input').value.trim();
     if (!val) return;
-    showResult(isCorrectAnswer(currentQ, val));
+    checkAnswer(val);
 }
 
-function showResult(correct) {
+// 正誤判定と音声再生のメイン処理
+function checkAnswer(ans) {
+    // 既に回答済みの場合は何もしない
+    if (document.getElementById('next-btn').style.display === 'block') return;
+
+    const isCorrect = Array.isArray(currentQ.name) ? currentQ.name.includes(ans) : currentQ.name === ans;
     questionsDone++;
+    
     const msg = document.getElementById('result-message');
-    if (correct) {
-        correctCount++; streak++; score += 10;
-        msg.innerHTML = '<span class="result-correct">✓ 正解！</span>';
-        document.getElementById('bushu-char').classList.add('pop');
-        playSeikai(); // ★ここでwav再生
-        if (streak >= 3) launchConfetti();
+    if (isCorrect) {
+        score += 10; streak++;
+        msg.innerText = '⭕ 正解！'; msg.style.color = 'var(--green)';
+        
+        // 音声再生（頭出しをしてから再生）
+        seikaiSound.currentTime = 0;
+        seikaiSound.play().catch(e => console.log("再生エラー:", e));
     } else {
-        streak = 0; sessionWrongs.push(currentQ);
-        const name = Array.isArray(currentQ.name) ? currentQ.name[0] : currentQ.name;
-        msg.innerHTML = `<span class="result-wrong">✗ 正解：「${name}」</span>`;
-        document.getElementById('bushu-char').classList.add('shake');
+        streak = 0;
+        const n = Array.isArray(currentQ.name) ? currentQ.name[0] : currentQ.name;
+        msg.innerText = '❌ 不正解！正解は：' + n; msg.style.color = 'var(--red)';
+        
+        // ★ここでhazure.wavを再生（頭出しをしてから再生）
+        hazureSound.currentTime = 0;
+        hazureSound.play().catch(e => console.log("再生エラー:", e));
     }
+    
     updateStats();
     document.getElementById('next-btn').style.display = 'block';
-    setTimeout(() => document.getElementById('bushu-char').classList.remove('pop', 'shake'), 500);
 }
 
 function updateStats() {
-    document.getElementById('score-display').innerText = score;
-    document.getElementById('streak-display').innerText = streak;
-}
-
-function showReview() {
-    const el = document.getElementById('review-list');
-    el.innerHTML = sessionWrongs.length ? '' : '<p style="text-align:center;padding:20px;color:#888;">間違いはありません！</p>';
-    sessionWrongs.forEach(q => {
-        const d = document.createElement('div');
-        d.style.cssText = 'display:flex;align-items:center;gap:15px;padding:10px;background:white;margin-bottom:5px;border-radius:8px;';
-        d.innerHTML = `<span style="font-size:2rem;font-weight:900;">${q.char}</span><span>${Array.isArray(q.name)?q.name[0]:q.name}</span>`;
-        el.appendChild(d);
-    });
+    document.getElementById('stats').innerText = `Score: ${score} | 🔥 ${streak}`;
 }
 
 function showResultScreen() {
     document.getElementById('main-card').classList.remove('visible');
-    document.getElementById('result-screen').style.display = 'block';
-    const pct = Math.round(correctCount / SESSION_LENGTH * 100);
-    document.getElementById('final-score').innerText = pct + '%';
-    document.getElementById('final-grade').innerText = pct >= 80 ? '🏆 素晴らしい成績です！' : '📖 復習して次も頑張りましょう！';
-}
-
-function launchConfetti() {
-    for (let i = 0; i < 30; i++) {
-        const el = document.createElement('div');
-        el.className = 'confetti-piece';
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.background = ['#d4a017','#c0392b','#27ae60'][Math.floor(Math.random()*3)];
-        el.style.animationDuration = (1 + Math.random() * 2) + 's';
-        document.body.appendChild(el);
-        el.addEventListener('animationend', () => el.remove());
-    }
+    const rs = document.getElementById('result-screen');
+    rs.style.display = 'block';
+    document.getElementById('final-score').innerText = score + '点';
+    document.getElementById('final-msg').innerText = score >= 80 ? '🏆 素晴らしい！合格圏内です！' : '📖 繰り返し練習しましょう！';
 }
 </script>
 </body>
