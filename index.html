@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>部首名マスター 3級</title>
+    <title>部首名マスター 3級 (データ拡張版)</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=M+PLUS+1p:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -30,7 +30,7 @@
         .start-btn { padding: 16px 48px; background: var(--ink); color: var(--gold); border: 2px solid var(--gold); border-radius: 8px; font-weight: 700; cursor: pointer; }
         .top-bar { background: var(--ink); padding: 12px 20px; display: flex; justify-content: space-between; color: var(--gold); border-bottom: 3px solid var(--gold); }
         .mode-tabs { display: flex; background: var(--paper-dark); }
-        .mode-tab { flex: 1; padding: 10px; border: none; font-weight: 700; color: #888; cursor: pointer; background: none; outline: none; }
+        .mode-tab { flex: 1; padding: 10px; border: none; font-weight: 700; color: #888; cursor: pointer; background: none; outline: none; font-size: 0.9rem; }
         .mode-tab.active { color: var(--ink); background: var(--paper); border-bottom: 3px solid var(--ink); }
         .question-area { padding: 24px; text-align: center; }
         .bushu-char { font-family: 'Noto Serif JP', serif; font-size: 100px; font-weight: 900; color: var(--ink); margin-bottom: 10px; }
@@ -62,6 +62,7 @@
         <div class="mode-tabs">
             <button class="mode-tab active" id="tab-beginner" onclick="setMode('beginner')">初級(4択)</button>
             <button class="mode-tab" id="tab-advanced" onclick="setMode('advanced')">応用(入力)</button>
+            <button class="mode-tab" id="tab-kanji" onclick="setMode('kanji')">漢字(4択)</button>
         </div>
         <div class="progress-bar" id="progress-bar"></div>
         <div class="question-area">
@@ -86,107 +87,118 @@
 
 <script>
 const bushuData = [
-    { char:"一", name:"いち", strokes:1, samples:"一・上・下", choices:["いち","つち","じゅう","の"] },
-    { char:"丨", name:"たてぼう", strokes:1, samples:"中・串", choices:["たてぼう","いち","の","はねぼう"] },
-    { char:"丿", name:"の", strokes:1, samples:"乃・久", choices:["の","いち","たてぼう","はねぼう"] },
-    { char:"乙", name:"おつ", strokes:1, samples:"乙・乱", choices:["おつ","いち","の","しり"] },
-    { char:"亅", name:"はねぼう", strokes:1, samples:"了・事", choices:["はねぼう","たてぼう","の","おつ"] },
-    { char:"二", name:"に", strokes:2, samples:"二・互", choices:["に","いち","じゅう","ひと"] },
-    { char:"亠", name:"なべぶた", strokes:2, samples:"亡・交・京", choices:["なべぶた","わかんむり","うかんむり","あなかんむり"] },
-    { char:"人", name:"ひと", strokes:2, samples:"人・今・介", choices:["ひと","にんべん","ひとあし","ひとやね"] },
-    { char:"亻", name:"にんべん", strokes:2, samples:"休・代・仕", choices:["にんべん","ぎょうにんべん","ひと","ひとあし"] },
-    { char:"儿", name:"ひとあし", strokes:2, samples:"兄・元・光", choices:["ひとあし","にんべん","ひと","にすい"] },
-    { char:"入", name:"いりやね", strokes:2, samples:"入・全", choices:["いりやね","ひとやね","ひと","にんべん"] },
-    { char:"八", name:"はち", strokes:2, samples:"八・公・共", choices:["はち","ひと","いりやね","に"] },
-    { char:"冂", name:"まきがまえ", strokes:2, samples:"内・円・同", choices:["まきがまえ","くにがまえ","もんがまえ","つつみがまえ"] },
-    { char:"冖", name:"わかんむり", strokes:2, samples:"冗・冠・写", choices:["わかんむり","うかんむり","なべぶた","あなかんむり"] },
-    { char:"冫", name:"にすい", strokes:2, samples:"次・冷・凍", choices:["にすい","さんずい","したみず","いち"] },
-    { char:"几", name:"つくえ", strokes:2, samples:"凡・処", choices:["つくえ","かぜかんむり","ちから","かたな"] },
-    { char:"凵", name:"うけばこ", strokes:2, samples:"凶・出", choices:["うけばこ","はこがまえ","はこづくり","かくがまえ"] },
-    { char:"刀", name:"かたな", strokes:2, samples:"刀・切・分", choices:["かたな","りっとう","ちから","つくえ"] },
-    { char:"刂", name:"りっとう", strokes:2, samples:"判・別・利", choices:["りっとう","かたな","にんべん","さんずい"] },
-    { char:"力", name:"ちから", strokes:2, samples:"力・助・勉", choices:["ちから","かたな","つくえ","りっとう"] },
-    { char:"勹", name:"つつみがまえ", strokes:2, samples:"包・旬", choices:["つつみがまえ","まきがまえ","くにがまえ","もんがまえ"] },
-    { char:"匕", name:"さじ", strokes:2, samples:"北・比", choices:["さじ","かたな","ちから","に"] },
-    { char:"匚", name:"はこがまえ", strokes:2, samples:"匠・伝", choices:["はこがまえ","うけばこ","もんがまえ","くにがまえ"] },
-    { char:"十", name:"じゅう", strokes:2, samples:"十・古・支", choices:["じゅう","に","つち","いち"] },
-    { char:"卜", name:"ぼく", strokes:2, samples:"占・外", choices:["ぼく","たてぼう","に","じゅう"] },
-    { char:"卩", name:"ふしづくり", strokes:2, samples:"印・即", choices:["ふしづくり","おおざと","こざとへん","りっとう"] },
-    { char:"厂", name:"がんだれ", strokes:2, samples:"厚・原", choices:["がんだれ","まだれ","やまいだれ","しかばね"] },
-    { char:"又", name:"また", strokes:2, samples:"又・友・反", choices:["また","ちから","かたな","に"] },
-    { char:"口", name:"くち", strokes:3, samples:"口・古・右", choices:["くち","くにがまえ","ひ","め"] },
-    { char:"囗", name:"くにがまえ", strokes:3, samples:"国・回・図", choices:["くにがまえ","くち","もんがまえ","まきがまえ"] },
-    { char:"土", name:"つち", strokes:3, samples:"土・地・在", choices:["つち","じゅう","に","たてぼう"] },
-    { char:"士", name:"さむらい", strokes:3, samples:"士・声・売", choices:["さむらい","つち","じゅう","に"] },
-    { char:"夂", name:"ふゆがしら", strokes:3, samples:"各・冬", choices:["ふゆがしら","なつあし","ひとやね","いりやね"] },
-    { char:"夕", name:"ゆうべ", strokes:3, samples:"夕・外・多", choices:["ゆうべ","た","め","くち"] },
-    { char:"大", name:"だい", strokes:3, samples:"大・天・太", choices:["だい","ひと","に","じゅう"] },
-    { char:"女", name:"おんな", strokes:3, samples:"女・好・安", choices:["おんな","くち","また","め"] },
-    { char:"子", name:"こ", strokes:3, samples:"子・字・学", choices:["こ","おんな","また","りっしんべん"] },
-    { char:"宀", name:"うかんむり", strokes:3, samples:"家・安・守", choices:["うかんむり","わかんむり","あなかんむり","なべぶた"] },
-    { char:"寸", name:"すん", strokes:3, samples:"寸・寺・対", choices:["すん","たてぼう","じゅう","に"] },
-    { char:"小", name:"しょう", strokes:3, samples:"小・少・光", choices:["しょう","さんずい","にすい","ひとあし"] },
-    { char:"尸", name:"しかばね", strokes:3, samples:"居・屈・展", choices:["しかばね","がんだれ","まだれ","やまいだれ"] },
-    { char:"山", name:"やま", strokes:3, samples:"山・岩・岸", choices:["やま","うけばこ","はこがまえ","つち"] },
-    { char:"川", name:"かわ", strokes:3, samples:"川・州・順", choices:["かわ","さんずい","にすい","たてぼう"] },
-    { char:"工", name:"たくみ", strokes:3, samples:"工・左・巧", choices:["たくみ","つち","に","じゅう"] },
-    { char:"己", name:"おのれ", strokes:3, samples:"己・巻", choices:["おのれ","さじ","くち","また"] },
-    { char:"巾", name:"はば", strokes:3, samples:"巾・布・市", choices:["はば","たくみ","つち","やま"] },
-    { char:"干", name:"いちじゅう", strokes:3, samples:"干・平", choices:["いちじゅう","じゅう","に","つち"] },
-    { char:"广", name:"まだれ", strokes:3, samples:"広・店・府", choices:["まだれ","がんだれ","やまいだれ","しかばね"] },
-    { char:"廴", name:"えんにょう", strokes:3, samples:"廷・延・建", choices:["えんにょう","しんにゅう","いとにょう","そうにょう"] },
-    { char:"弓", name:"ゆみ", strokes:3, samples:"弓・引・強", choices:["ゆみ","こ","おのれ","また"] },
-    { char:"彡", name:"さんづくり", strokes:3, samples:"形・影・彩", choices:["さんづくり","さんずい","にすい","の"] },
-    { char:"彳", name:"ぎょうにんべん", strokes:3, samples:"行・役・復", choices:["ぎょうにんべん","にんべん","りっしんべん","しんにゅう"] },
-    { char:"忄", name:"りっしんべん", strokes:3, samples:"忙・情・快", choices:["りっしんべん","にんべん","ぎょうにんべん","さんずい"] },
-    { char:"扌", name:"てへん", strokes:3, samples:"打・指・持", choices:["てへん","にんべん","さんずい","きへん"] },
-    { char:"氵", name:"さんずい", strokes:3, samples:"海・泳・池", choices:["さんずい","にすい","したみず","かわ"] },
-    { char:"⻌", name:["しんにゅう","しんにょう"], strokes:3, samples:"道・進・運", choices:["しんにゅう","えんにょう","いとにょう","そうにょう"] },
-    { char:"阝(左)", name:"こざとへん", strokes:3, samples:"院・防・降", choices:["こざとへん","おおざと","ふしづくり","りっとう"] },
-    { char:"阝(右)", name:"おおざと", strokes:3, samples:"部・都・郡", choices:["おおざと","こざとへん","ふしづくり","りっとう"] },
-    { char:"心", name:"こころ", strokes:4, samples:"心・思・急", choices:["こころ","りっしんべん","したごころ","れっか"] },
-    { char:"戈", name:"たすき", strokes:4, samples:"成・戦・浅", choices:["たすき","ほこづくり","さんづくり","りっとう"] },
-    { char:"戸", name:"とびらのと", strokes:4, samples:"戸・戻・所", choices:["とびらのと","しかばね","がんだれ","まだれ"] },
-    { char:"手", name:"て", strokes:4, samples:"手・挙", choices:["て","てへん","きへん","のぎへん"] },
-    { char:"支", name:"しにょう", strokes:4, samples:"支・鼓", choices:["しにょう","また","えんにょう","しんにゅう"] },
-    { char:"斤", name:"おの", strokes:4, samples:"新・断", choices:["おの","たてぼう","たくみ","はば"] },
-    { char:"方", name:"ほう", strokes:4, samples:"方・旅・族", choices:["ほう","なべぶた","じゅう","に"] },
-    { char:"日", name:["にち","ひ"], strokes:4, samples:"日・明・晴", choices:["ひ","め","くち","た"] },
-    { char:"月", name:"つき", strokes:4, samples:"月・明・望", choices:["つき","にくづき","ひ","め"] },
-    { char:"木", name:"き", strokes:4, samples:"木・本・末", choices:["き","きへん","のぎへん","つち"] },
-    { char:"欠", name:"あくび", strokes:4, samples:"欠・次・歌", choices:["あくび","さじ","ひと","にんべん"] },
-    { char:"止", name:"とめる", strokes:4, samples:"止・歩・正", choices:["とめる","つち","に","じゅう"] },
-    { char:"歹", name:"がつへん", strokes:4, samples:"死・残", choices:["がつへん","いち","たてぼう","に"] },
-    { char:"氏", name:"うじ", strokes:4, samples:"氏・民", choices:["うじ","にんべん","てへん","きへん"] },
-    { char:"水", name:"みず", strokes:4, samples:"水・氷・泉", choices:["みず","さんずい","にすい","したみず"] },
-    { char:"火", name:"ひ", strokes:4, samples:"火・灯・焼", choices:["ひ","ひへん","れっか","にちへん"] },
-    { char:"父", name:"ちち", strokes:4, samples:"父・釜", choices:["ちち","はち","ひと","じゅう"] },
-    { char:"牛", name:"うし", strokes:4, samples:"牛・物・牧", choices:["うし","うしへん","のぎへん","きへん"] },
-    { char:"王", name:"おうへん", strokes:4, samples:"王・現・球", choices:["おうへん","たまへん","つち","じゅう"] },
-    { char:"礻", name:"しめすへん", strokes:4, samples:"神・社・福", choices:["しめすへん","ころもへん","のぎへん","けものへん"] },
-    { char:"疒", name:"やまいだれ", strokes:5, samples:"病・症・痛", choices:["やまいだれ","まだれ","がんだれ","しかばね"] },
-    { char:"目", name:"め", strokes:5, samples:"目・見・眠", choices:["め","ひ","くち","た"] },
-    { char:"石", name:"いし", strokes:5, samples:"石・岩・砂", choices:["いし","くち","やま","つち"] },
-    { char:"立", name:"たつ", strokes:5, samples:["たつ","たつへん","なべぶた","じゅう"] },
-    { char:"衣", name:"ころも", strokes:6, samples:"衣・袋", choices:["ころも","ころもへん","しめすへん","なべぶた"] },
-    { char:"⻂", name:"ころもへん", strokes:5, samples:"初・被・複", choices:["ころもへん","しめすへん","さんずい","ゆきへん"] },
-    { char:"米", name:"こめ", strokes:6, samples:"米・粉・粒", choices:["こめ","こめへん","きへん","のぎへん"] },
-    { char:"糸", name:"いと", strokes:6, samples:"糸・紙・細", choices:["いと","いとへん","ころもへん","さんずい"] },
-    { char:"虫", name:"むし", strokes:6, samples:"虫・虹・蛇", choices:["むし","むしへん","かいへん","めへん"] },
-    { char:"舟", name:"ふね", strokes:6, samples:"舟・船・航", choices:["ふね","ふねへん","くるまへん","とりへん"] },
-    { char:"耳", name:"みみ", strokes:6, samples:"耳・聞・取", choices:["みみ","め","くち","ひ"] },
-    { char:"言", name:"ことば", strokes:7, samples:"言・計・語", choices:["ことば","ごんべん","くち","たつ"] },
-    { char:"貝", name:"かい", strokes:7, samples:"貝・財・買", choices:["かい","かいへん","めへん","むしへん"] },
-    { char:"足", name:"あし", strokes:7, samples:"足・路・踊", choices:["あし","あしへん","ひとあし","にんにょう"] },
-    { char:"車", name:"くるま", strokes:7, samples:"車・転・軽", choices:["くるま","くるまへん","ふねへん","とりへん"] },
-    { char:"金", name:"かね", strokes:8, samples:"金・銀・銅", choices:["かね","かねへん","こめへん","いしへん"] },
-    { char:"門", name:"もんがまえ", strokes:8, samples:"開・閉・問", choices:["もんがまえ","くにがまえ","しかばね","つつみがまえ"] },
-    { char:"雨", name:"あめ", strokes:8, samples:"雨・雪・雲", choices:["あめ","あめかんむり","ゆきへん","うかんむり"] },
-    { char:"食", name:"しょくへん", strokes:9, samples:"飯・飲・館", choices:["しょくへん","かねへん","こめへん","いとへん"] },
-    { char:"馬", name:"うま", strokes:10, samples:"馬・駅・験", choices:["うま","うまへん","とりへん","ふねへん"] },
-    { char:"高", name:"たかい", strokes:10, samples:"高", choices:["たかい","なべぶた","くち","じゅう"] },
-    { char:"魚", name:"うお", strokes:11, samples:"魚・鮮・鯨", choices:["うお","うおへん","むしへん","ふねへん"] },
-    { char:"黄", name:"きいろ", strokes:11, samples:"黄", choices:["きいろ","つち","にじゅうあし","じゅう"] }
+    { char:"一", name:"いち", strokes:1, samples:"一・上・下・丈・三・不・世・丘・且", choices:["いち","つち","じゅう","の"] },
+    { char:"丨", name:"たてぼう", strokes:1, samples:"中・串・個・引", choices:["たてぼう","いち","の","はねぼう"] },
+    { char:"丿", name:"の", strokes:1, samples:"乃・久・乗・乏・九", choices:["の","いち","たてぼう","はねぼう"] },
+    { char:"乙", name:"おつ", strokes:1, samples:"乙・乱・乳・乾・九", choices:["おつ","いち","の","しり"] },
+    { char:"亅", name:"はねぼう", strokes:1, samples:"了・事・予・争", choices:["はねぼう","たてぼう","の","おつ"] },
+    { char:"二", name:"に", strokes:2, samples:"二・互・五・井・元", choices:["に","いち","じゅう","ひと"] },
+    { char:"亠", name:"なべぶた", strokes:2, samples:"亡・交・京・充・妄・卒・亨・夜", choices:["なべぶた","わかんむり","うかんむり","あなかんむり"] },
+    { char:"人", name:"ひと", strokes:2, samples:"人・今・介・仏・付・代・企", choices:["ひと","にんべん","ひとあし","ひとやね"] },
+    { char:"亻", name:"にんべん", strokes:2, samples:"休・代・仕・伸・俊・借・保・信・偏・僚・優・傾・佳・偉・促・偶・偽・傍", choices:["にんべん","ぎょうにんべん","ひと","ひとあし"] },
+    { char:"儿", name:"ひとあし", strokes:2, samples:"兄・元・光・兆・充・先・党", choices:["ひとあし","にんべん","ひと","にすい"] },
+    { char:"入", name:"いりやね", strokes:2, samples:"入・全・内・両", choices:["いりやね","ひとやね","ひと","にんべん"] },
+    { char:"八", name:"はち", strokes:2, samples:"八・公・共・兵・具・典・兼・六", choices:["はち","ひと","いりやね","に"] },
+    { char:"冂", name:"まきがまえ", strokes:2, samples:"内・円・同・冊・再・岡・周", choices:["まきがまえ","くにがまえ","もんがまえ","つつみがまえ"] },
+    { char:"冖", name:"わかんむり", strokes:2, samples:"冗・冠・写・冥・塚・冪", choices:["わかんむり","うかんむり","なべぶた","あなかんむり"] },
+    { char:"冫", name:"にすい", strokes:2, samples:"次・冷・凍・准・凄・凝・冬", choices:["にすい","さんずい","したみず","いち"] },
+    { char:"几", name:"つくえ", strokes:2, samples:"凡・処・凧・凪", choices:["つくえ","かぜかんむり","ちしから","かたな"] },
+    { char:"凵", name:"うけばこ", strokes:2, samples:"凶・出・凸・凹・函", choices:["うけばこ","はこがまえ","はこづくり","かくがまえ"] },
+    { char:"刀", name:"かたな", strokes:2, samples:"刀・切・分・刃・初・剪", choices:["かたな","りっとう","ちしから","つくえ"] },
+    { char:"刂", name:"りっとう", strokes:2, samples:"判・別・利・到・制・刷・刺・刻・創・割", choices:["りっとう","かたな","にんべん","さんずい"] },
+    { char:"力", name:"ちから", strokes:2, samples:"力・助・勉・効・募・勢・勇・勅・勘", choices:["ちから","かたな","つくえ","りっとう"] },
+    { char:"勹", name:"つつみがまえ", strokes:2, samples:"包・旬・勾・匂・勿・匆", choices:["つつみがまえ","まきがまえ","くにがまえ","もんがまえ"] },
+    { char:"匕", name:"さじ", strokes:2, samples:"北・比・旨・匙", choices:["さじ","かたな","ちから","に"] },
+    { char:"匚", name:"はこがまえ", strokes:2, samples:"匠・巨・匡・匪", choices:["はこがまえ","うけばこ","もんがまえ","くにがまえ"] },
+    { char:"十", name:"じゅう", strokes:2, samples:"十・古・支・千・半・卒・協・博", choices:["じゅう","に","つち","いち"] },
+    { char:"卜", name:"ぼく", strokes:2, samples:"占・外・卦・訃", choices:["ぼく","たてぼう","に","じゅう"] },
+    { char:"卩", name:"ふしづくり", strokes:2, samples:"印・即・卵・卯・却・卸", choices:["ふしづくり","おおざと","こざとへん","りっとう"] },
+    { char:"厂", name:"がんだれ", strokes:2, samples:"厚・原・厄・暦・厩", choices:["がんだれ","まだれ","やまいだれ","しかばね"] },
+    { char:"又", name:"また", strokes:2, samples:"又・友・反・取・受・双・叙", choices:["また","ちから","かたな","に"] },
+    { char:"口", name:"くち", strokes:3, samples:"口・古・右・味・呼・咲・営・器・唯・唱・喚・嘆", choices:["くち","くにがまえ","ひ","め"] },
+    { char:"囗", name:"くにがまえ", strokes:3, samples:"国・回・図・因・困・囲・固・圏・園", choices:["くにがまえ","くち","もんがまえ","まきがまえ"] },
+    { char:"土", name:"つち", strokes:3, samples:"土・地・在・型・域・執・培・基・塩・増・境", choices:["つち","じゅう","に","たてぼう"] },
+    { char:"士", name:"さむらい", strokes:3, samples:"士・声・売・吉・壮・壱・寿", choices:["さむらい","つち","じゅう","に"] },
+    { char:"夂", name:"ふゆがしら", strokes:3, samples:"各・冬・夏・変", choices:["ふゆがしら","なつあし","ひとやね","いりやね"] },
+    { char:"夕", name:"ゆうべ", strokes:3, samples:"夕・外・多・夜・夢", choices:["ゆうべ","た","め","くち"] },
+    { char:"大", name:"だい", strokes:3, samples:"大・天・太・夫・失・央・奇・契・奔・奥・奪", choices:["だい","ひと","に","じゅう"] },
+    { char:"女", name:"おんな", strokes:3, samples:"女・好・安・如・妃・妄・妙・妨・姓・委・姫・婚・婦・媒・嫁・嫌", choices:["おんな","くち","また","め"] },
+    { char:"子", name:"こ", strokes:3, samples:"子・字・学・存・孫・孔・孤・季・孵", choices:["こ","おんな","また","りっしんべん"] },
+    { char:"宀", name:"うかんむり", strokes:3, samples:"家・安・守・宇・宅・宋・完・宏・宗・官・定・宜・客・宣・室・宮・宰・害・宴・宵・容・宿・寂・寄・密・富・寒・察・寡・寝・実", choices:["うかんむり","わかんむり","あなかんむり","なべぶた"] },
+    { char:"寸", name:"すん", strokes:3, samples:"寸・寺・対・専・尋・導・封・射", choices:["すん","たてぼう","じゅう","に"] },
+    { char:"小", name:"しょう", strokes:3, samples:"小・少・光・尖・尚・当", choices:["しょう","さんずい","にすい","ひとあし"] },
+    { char:"尸", name:"しかばね", strokes:3, samples:"居・屈・展・局・屍・尾・届・屋・履", choices:["しかばね","gがんだれ","まだれ","やまいだれ"] },
+    { char:"山", name:"やま", strokes:3, samples:"山・岩・岸・峰・崎・崩・崇・嵐・岐・峠・岳", choices:["やま","うけばこ","はこがまえ","つち"] },
+    { char:"川", name:"かわ", strokes:3, samples:"川・州・順・巡・幽", choices:["かわ","さんずい","にすい","たてぼう"] },
+    { char:"工", name:"たくみ", strokes:3, samples:"工・左・巧・差・巨・巫・巩", choices:["たくみ","つち","に","じゅう"] },
+    { char:"己", name:"おのれ", strokes:3, samples:"己・巻・巴・巳・忌・巽", choices:["おのれ","さじ","くち","また"] },
+    { char:"巾", name:"はば", strokes:3, samples:"巾・布・市・帆・希・帖・帳・帽・幅・幕", choices:["はば","たくみ","つち","やま"] },
+    { char:"干", name:"いちじゅう", strokes:3, samples:"干・平・年・幸・幹", choices:["いちじゅう","じゅう","に","つち"] },
+    { char:"广", name:"まだれ", strokes:3, samples:"広・店・府・床・庫・庭・座・唐・庵・康・庶・廃・廉・廈・廟・廠・廣", choices:["まだれ","がんだれ","やまいだれ","しかばね"] },
+    { char:"廴", name:"えんにょう", strokes:3, samples:"廷・延・建・廻", choices:["えんにょう","しんにゅう","いとにょう","そうにょう"] },
+    { char:"弓", name:"ゆみ", strokes:3, samples:"弓・引・強・弘・弦・弧・弱・張・弾・湾", choices:["ゆみ","こ","おのれ","また"] },
+    { char:"彡", name:"さんづくり", strokes:3, samples:"形・影・彩・彫・彦・彰", choices:["さんづくり","さんずい","にすい","の"] },
+    { char:"彳", name:"ぎょうにんべん", strokes:3, samples:"行・役・復・径・彼・往・征・待・律・後・徐・徒・得・御・循・微・徹・徳", choices:["ぎょうにんべん","にんべん","りっしんべん","しんにゅう"] },
+    { char:"忄", name:"りっしんべん", strokes:3, samples:"忙・情・快・性・怪・怖・怜・恨・恒・悔・悦・悟・悼・惧・惨・慣・慢・憶・懐", choices:["りっしんべん","にんべん","ぎょうにんべん","さんずい"] },
+    { char:"手", name:"て", strokes:4, samples:"手・挙・掌・摩・摯", choices:["て","てへん","きへん","のぎへん"] },
+    { char:"扌", name:"てへん", strokes:3, samples:"打・指・持・払・技・投・抗・折・択・抽・担・拒・拓・拘・招・拝・拡・括・拭・拳・挑・挟・挿・捉・据・掘・掛・採・探・接・控・推・措・描・提・揚・換・握・揮・援・損・揺・捜・搬・携・搾・摂・摘・撤・撲・擁・操・擬", choices:["てへん","にんべん","さんずい","きへん"] },
+    { char:"外", name:"さんずい", strokes:3, samples:"海・泳・池・汚・江・決・没・沢・沖・沈・浜・沸・油・治・沼・沿・況・泉・泊・泌・法・泡・波・泣・泥・注・泰・洋・洗・洞・津・洪・活・派・流・浄・浅・浪・消・涙・涯・液・涼・淑・淡・深・混・清・渇・済・渉・渋・渓・渚・減・渡・渦・温・測・湯・湖・港・湧・滋・満・漁・漂・漆・漏・演・漠・漢・漫・潔・潤・潮・澄・激・濁・濃・濫・濯・瀬", choices:["さんずい","にすい","したみず","かわ"] },
+    { char:"⻌", name:["しんにゅう","しんにょう"], strokes:3, samples:"道・進・運・辺・巡・迎・近・返・迫・迭・述・迷・追・退・送・逃・逆・透・逐・逓・途・通・逝・速・造・連・逮捕・逸・遂・遅・遇・遊・遍・過・達・違・遠・遣・遥・適・遭・遮・遷・選・遺・避・還・遵", choices:["しんにゅう","えんにょう","いとにょう","そうにょう"] },
+    { char:"阝(左)", name:"こざとへん", strokes:3, samples:"院・防・降・阻・阿・附・限・陛・陣・除・陪・陰・陳・陵・陶・陥・陸・陽・隊・階・随・隔・隙・隠・障・際・隣", choices:["こざとへん","おおざと","ふしづくり","りっとう"] },
+    { char:"阝(right)", name:"おおざと", strokes:3, samples:"部・都・郡・邦・邪・邸・郊・郎・郭・郵・郷・鄙", choices:["おおざと","こざとへん","ふしづくり","りっとう"] },
+    { char:"心", name:"こころ", strokes:4, samples:"心・思・急・忌・志・忍・忠・念・忽・怒・怨・恋・恩・恭・息・恵・悪・悲・惑・惣・意・愚・愛・感・慈・態・慌・慎・慕・慮・慰・慶・憂・憲・憩", choices:["こころ","りっしんべん","したごころ","れっか"] },
+    { char:"戈", name:"たすき", strokes:4, samples:"成・戦・我・或・戚・戴・栽・裁", choices:["たすき","ほこづくり","さんづくり","りっとう"] },
+    { char:"斤", name:"おの", strokes:4, samples:"新・断・斥・斧・斯・斬", choices:["おの","たてぼう","たくみ","はば"] },
+    { char:"方", name:"ほう", strokes:4, samples:"方・旅・族・於・施・旁・旋・旌・旗", choices:["ほう","なべぶた","じゅう","に"] },
+    { char:"日", name:["にち","ひ"], strokes:4, samples:"日・明・晴・旦・旧・旬・昇・昆・昌・易・星・映・春・昨・昭・是・時・晃・晋・昼・暑・暖・暗・暇・暮・暴・曇・曜", choices:["ひ","め","くち","た"] },
+    { char:"月", name:"つき", strokes:4, samples:"月・明・望・朗・期・朝・覇", choices:["つき","にくづき","ひ","め"] },
+    { char:"木", name:"き", strokes:4, samples:"木・本・末・未・札・朴・机・朽・杉・材・村・杓・杖・杜・杞・束・条・来・東・松・板・析・枕・林・枚・果・枝・枠・枯・架・柄・柊・某・染・柔・柱・柳・査・栄・校・核・根・格・栽培・桁・桂・桃・案・桟・梅・梢・梨・棄・棋・棟・棚・森・椅・植物・検・業・極・楷・楼・楽・概・楕・構・槇・様・槽・標・模・権・樹・橋・機・欄・櫻", choices:["き","きへん","のぎへん","つち"] },
+    { char:"欠", name:"あくび", strokes:4, samples:"欠・次・歌・欧・欲・歓・欺・欣", choices:["あくび","さじ","ひと","にんべん"] },
+    { char:"止", name:"とめる", strokes:4, samples:"止・歩・正・此・武・歪・歳・歴", choices:["とめる","つち","に","じゅう"] },
+    { char:"歹", name:"がつへん", strokes:4, samples:"死・残・殊・殉・殖・裂・残酷・殴", choices:["がつへん","いち","たてぼう","に"] },
+    { char:"氏", name:"うじ", strokes:4, samples:"氏・民・昏・氓", choices:["うじ","にんべん","てへん","きへん"] },
+    { char:"水", name:"みず", strokes:4, samples:"水・氷・泉・求・永・沓・漿", choices:["みず","さんずい","にすい","したみず"] },
+    { char:"火", name:"ひ", strokes:4, samples:"火・灯・焼・災・炉・炊・炎・炒・炭・点・為・烈・無・焦・然・煮・煎・煙・煤・煉・照・煩・熊・熟・熱・燃・燈・燕・營・爆・爛", choices:["ひ","ひへん","れっか","にchへん"] },
+    { char:"父", name:"ちち", strokes:4, samples:"父・釜・爺・爽", choices:["ちち","はち","ひと","じゅう"] },
+    { char:"牛", name:"うし", strokes:4, samples:"牛・物・牧・特・牲・犠・牢・牽・犀", choices:["うし","うしへん","のぎへん","きへん"] },
+    { char:"王", name:"おうへん", strokes:4, samples:"王・現・球・玩・玲・珀・班・珪・理・琉・琢・琥・琵・琶・琴・瑕・瑛・瑠・璃・環境・環・璧・璽", choices:["おうへん","たまへん","つち","じゅう"] },
+    { char:"疒", name:"やまいだれ", strokes:5, samples:"病・症・痛・疫・疾・疱・痕・痔・疵・痘・痢・痣・痩・痴・瘍・療・癌・癒・癖", choices:["やまいだれ","まだれ","がんだれ","しかばね"] },
+    { char:"目", name:"め", strokes:5, samples:"目・見・眠・盲・看・盾・省・眉・眼・睡・睦・督・瞬・瞭・瞳", choices:["め","ひ","くち","た"] },
+    { char:"石", name:"いし", strokes:5, samples:"石・岩・砂・拓・研・砕・砦・破・砲・硝・硫・硬・碁・碑・碧・碩・磁・磐・磨・礁・礎", choices:["いし","くち","やま","つち"] },
+    { char:"立", name:"たつ", strokes:5, samples:"たつ・章・競・音・暗・意・竜・産・妾・親", choices:["たつ","たつへん","なべぶた","じゅう"] },
+    { char:"衣", name:"ころも", strokes:6, samples:"衣・袋・装・衰・衷・裏・製・複・裳・襲", choices:["ころも","ころもへん","しめすへん","なべぶた"] },
+    { char:"米", name:"こめ", strokes:6, samples:"米・粉・粒・粗・粘・粧・粕・粟・粥・精・糊・糖・糞・糧", choices:["こめ","こめへん","きへん","のぎへん"] },
+    { char:"糸", name:"いと", strokes:6, samples:"糸・紙・細・系・約・紅・紋・納・純・紘・級・紀・素・紡・索・紫・累・紳・紺・終・絃・結・絶・絞・絡・給・統・絵・絹・継続・維・綱・網・綿・総・緑・緒・線・締・編・緩・縁・縄・縛・縦・縫・縮・績・繁・繊・織・繕・繭・繰・纂", choices:["いと","いとへん","ころもへん","さんずい"] },
+    { char:"虫", name:"むし", strokes:6, samples:"虫・虹・蛇・蚊・蚤・蚕・蛍・蛮・蜂・蜜・融・螺・蝉・蟹・蠍・蟻", choices:["むし","むしへん","かいへん","めへん"] },
+    { char:"舟", name:"ふね", strokes:6, samples:"舟・船・航・般・舶・舷・舵・艇・艘・艦", choices:["ふね","ふねへん","くるまへん","とりへん"] },
+    { char:"耳", name:"みみ", strokes:6, samples:"耳・聞・取・恥・耽・聖・聘・聡・聯・聴・職・聾", choices:["みみ","め","くち","ひ"] },
+    { char:"言", name:"ことば", strokes:7, samples:"言・計・語・訂・記・討・訓・託・許・設・訳・訴・診・証・詐・詔・評・詞・詠・試・詩・詰・話・該・詳・誇・誌・認・誓・誘・誠・誤・説・読・誰・課・調・談・請・論・諸・諾・謀・諭・謎・諮・謙・講・謝・謡・謹・譲・護・讃", choices:["ことば","ごんべん","くち","たつ"] },
+    { char:"貝", name:"かい", strokes:7, samples:"貝・財・買・負・貞・貢・貧・貨・貪・販・責・貯・貴・貶・貸・費・貼・賀・賂・賃・賄・資・賊・賓・賜・賠・賞・賢・賤・賦・質・賭・購・贈・贄・贅", choices:["かい","かいへん","めへん","むしへん"] },
+    { char:"足", name:"あし", strokes:7, samples:"足・路・踊・距・跨・跪・跡・跳・践・踏・踪・蹂・蹄・蹟・蹴・躍・躊・躇", choices:["あし","あしへん","ひとあし","にんにょう"] },
+    { char:"車", name:"くるま", strokes:7, samples:"車・転・軽・軌・軍・軒・軟・軸・較・載・輪・輸・轄・輿・轟", choices:["くるま","くるまへん","ふねへん","とりへん"] },
+    { char:"金", name:"かね", strokes:8, samples:"金・銀・銅・針・釣・鈍・鈴・鉄・鉛・鉢・鉱・鉾・銃・銑・銘・銭・鋭・鋳・錯・録・錘・錠・錦・錬・鍵・鍋・鍛・鍍・鎌・鎖・鎮・鏡・鐘・鑑・鑚", choices:["かね","かねへん","こめへん","いしへん"] },
+    { char:"門", name:"もんがまえ", strokes:8, samples:"開・閉・問・閃・間・閑・閥・閣・閲・関・闇・闘・闢", choices:["もんがまえ","くにがまえ","しかばね","つつみがまえ"] },
+    { char:"雨", name:"あめ", strokes:8, samples:"雨・雪・雲・零・雷・電・震・需・霊・霜・霞・霧・露・覇・霽・靂", choices:["あめ","あめかんむり","ゆきへん","うかんむり"] },
+    { char:"食", name:"しょくへん", strokes:9, samples:"飯・飲・館・飢・飼・飽・飾・養・餌・餐・餓・余", choices:["しょくへん","かねへん","こめへん","いいとへん"] },
+    { char:"馬", name:"うま", strokes:10, samples:"馬・駅・験・駄・馳・馴・駁・駐・駒・駕・駿・騎・騒・騙・騰・驚・襲", choices:["うま","うまへん","とりへん","ふねへん"] },
+    { char:"高", name:"たかい", strokes:10, samples:"高・喬・嵩", choices:["たかい","なべぶた","くち","じゅう"] },
+    { char:"魚", name:"うお", strokes:11, samples:"魚・鮮・鯨・鮎・鮒・鮪・鮭・鮫・鯉・鯖・鯛・鰯・鰭・鰹・鰻・鱈・鱒・鱗", choices:["うお","うおへん","むしへん","ふねへん"] },
+    { char:"黄", name:"きいろ", strokes:11, samples:"黄・黄金・広", choices:["きいろ","つち","にじゅうあし","じゅう"] },
+    { char:"⻂", name:"ころもへん", strokes:5, samples:"被・複・補・袖・襟・裸・襖・襯・裕", choices:["ころもへん","しめすへん","さんずい","ゆきへん"] },
+    { char:"礻", name:"しめすへん", strokes:4, samples:"神・社・福・祝・祭・祈・祉・祐・祖・祥・禍・禅・礼", choices:["しめすへん","ころもへん","のぎへん","けものへん"] },
+    { char:"犭", name:"けものへん", strokes:3, samples:"犯・狭・猫・狩・狙・狐・猪・猛・猶・獲・獣", choices:["けものへん","にんべん","ぎょうにんべん","てへん"] },
+    { char:"禾", name:"のぎへん", strokes:5, samples:"私・秋・科・移・程・税・稚・種・称・稲・稿・稼・穂・穏・穫", choices:["のぎへん","きへん","こめへん","いしへん"] },
+    { char:"穴", name:"あなかんむり", strokes:5, samples:"空・究・窓・窮・突・窃・窒・窯・竈・穿", choices:["あなかんむり","うかんむり","わかんむり","なべぶた"] },
+    { char:"竹", name:"たけかんむり", strokes:6, samples:"答え・算・等・筆・竹・笑・笠・第・筋・策・筒・答・箇・築・簡・籍・簿", choices:["たけかんむり","くさかんむり","あめかんむり","うかんむり"] },
+    { char:"艹", name:"くさかんむり", strokes:3, samples:"若・草・茶・薬・薄・花・苦・英・茂・荒・荘・荷・菊・菌・菓・菜・華・落・葉・著・葬・蒸・暮・蔵・薫・薦・藍・薪・藻・蘇", choices:["くさかんむり","たけかんむり","はなかんむり","うかんむり"] },
+    { char:"頁", name:"おおがい", strokes:9, samples:"頂・順・預・頭・顔・項・頑・頓・領・頻・題・額・願・類・顧・顕", choices:["おおがい","かい","貝","ことば"] },
+    { char:"隹", name:"ふるとり", strokes:8, samples:"進・集・雇・誰・雄・雅・雌・雑・離・難・雁・雀", choices:["ふるとり","とり","とりへん","おおがい"] },
+    { char:"鳥", name:"とり", strokes:11, samples:"鳥・鳴・鶏・島・鳩・鳳・鳶・鴎・鴨・鴻・鵜・鵠・鶴・鷲・鷹", choices:["とり","ふるとり","うお","うま"] },
+    { char:"走", name:"そうにょう", strokes:7, samples:"起・越・超・赴・趨・赳", choices:["そうにょう","しんにゅう","えんにょう","いとにょう"] },
+    { char:"戸", name:"とだれ", strokes:4, samples:"所・戻・房・扇・扉・雇", choices:["とだれ","とびらのと","しかばね","まだれ"] },
+    { char:"皮", name:"けがわ", strokes:5, samples:"皮・疲・彼・波・被", choices:["けがわ","ひ","ころも","やまいだれ"] },
+    { char:"血", name:"ち", strokes:6, samples:"血・衆・血盟", choices:["ち","さら","みず","こころ"] },
+    { char:"皿", name:"さら", strokes:5, samples:"皿・盆・益・盗・盛・盟・監・盤・盪", choices:["さら","つき","うけばこ","くち"] }
 ];
 
 const seikaiSound = new Audio('seikai.wav');
@@ -199,7 +211,6 @@ let sessionPool = [];
 function initApp() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('main-card').classList.add('visible');
-    // 音声ファイルの事前ロード
     seikaiSound.load(); hazureSound.load();
     startSession();
 }
@@ -214,7 +225,9 @@ function setMode(m) {
     mode = m;
     document.getElementById('tab-beginner').classList.toggle('active', m==='beginner');
     document.getElementById('tab-advanced').classList.toggle('active', m==='advanced');
-    document.getElementById('beginner-ui').style.display = m==='beginner' ? 'grid' : 'none';
+    document.getElementById('tab-kanji').classList.toggle('active', m==='kanji');
+    
+    document.getElementById('beginner-ui').style.display = (m==='beginner' || m==='kanji') ? 'grid' : 'none';
     document.getElementById('advanced-ui').style.display = m==='advanced' ? 'flex' : 'none';
     nextQuestion();
 }
@@ -222,14 +235,31 @@ function setMode(m) {
 function nextQuestion() {
     if (questionsDone >= SESSION_COUNT) { showResultScreen(); return; }
     currentQ = sessionPool[questionsDone];
-    document.getElementById('bushu-char').innerText = currentQ.char;
-    document.getElementById('stroke-info').innerText = currentQ.strokes + '画';
-    document.getElementById('hint-text').innerText = 'ヒント：' + (Array.isArray(currentQ.samples) ? currentQ.samples.join('・') : currentQ.samples);
+    
+    if (mode === 'kanji') {
+        // 全て「・」か「/」で区切られているので、正規表現等で漢字のみをきれいに抽出して配列化
+        const sampleArray = currentQ.samples.split(/[・/]+/).filter(v => v.trim() !== "");
+        // 漢字の文字列（例："独立"など）から1文字だけ抽出
+        const fullText = sampleArray.join("");
+        const randomKanji = fullText[Math.floor(Math.random() * fullText.length)] || "漢";
+        
+        document.getElementById('bushu-char').innerText = randomKanji;
+        document.getElementById('stroke-info').innerText = 'この漢字の部首は？';
+        document.getElementById('hint-text').innerText = 'ヒント：部首の画数は ' + currentQ.strokes + ' 画';
+    } else {
+        document.getElementById('bushu-char').innerText = currentQ.char;
+        document.getElementById('stroke-info').innerText = currentQ.strokes + '画';
+        
+        // 画面上のヒント表示をきれいに整形
+        const cleanSamples = currentQ.samples.split(/[・/]+/).filter(v => v.trim() !== "").join('・');
+        document.getElementById('hint-text').innerText = 'ヒント：' + cleanSamples;
+    }
+    
     document.getElementById('result-message').innerText = '';
     document.getElementById('next-btn').style.display = 'none';
     document.getElementById('progress-bar').style.width = (questionsDone / SESSION_COUNT * 100) + '%';
     
-    if (mode === 'beginner') {
+    if (mode === 'beginner' || mode === 'kanji') {
         const ui = document.getElementById('beginner-ui'); ui.innerHTML = '';
         [...currentQ.choices].sort(() => Math.random() - 0.5).forEach(c => {
             const btn = document.createElement('button');
